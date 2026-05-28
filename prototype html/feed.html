@@ -1,0 +1,207 @@
+<!-- Feed de Conhecimento com Ajustes Finais -->
+<!DOCTYPE html><html lang="pt-BR"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>EduConnect - Feed</title>
+<!-- Tailwind CSS v3 CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Font: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            "on-secondary-container": "#514f82",
+            "tertiary-fixed-dim": "#c4c0ff",
+            "on-primary-container": "#7c296b",
+            "primary-fixed-dim": "#ffade5",
+            "on-secondary-fixed-variant": "#434173",
+            "background": "#f9f9fb",
+            "on-error": "#ffffff",
+            "on-surface-variant": "#51434b",
+            "on-secondary": "#ffffff",
+            "tertiary-fixed": "#e3dfff",
+            "surface-dim": "#d9dadc",
+            "surface-container": "#eeeef0",
+            "on-tertiary-fixed": "#130068",
+            "secondary-container": "#c6c3fe",
+            "on-surface": "#1a1c1d",
+            "surface": "#f9f9fb",
+            "secondary-fixed-dim": "#c4c1fb",
+            "surface-container-highest": "#e2e2e4",
+            "primary-fixed": "#ffd7ef",
+            "outline": "#84727c",
+            "on-secondary-fixed": "#171445",
+            "secondary": "#5b598d",
+            "on-tertiary": "#ffffff",
+            "surface-tint": "#943e80",
+            "secondary-fixed": "#e3dfff",
+            "tertiary": "#574fbe",
+            "surface-variant": "#e2e2e4",
+            "error-container": "#ffdad6",
+            "inverse-surface": "#2f3132",
+            "on-tertiary-container": "#4339a9",
+            "error": "#ba1a1a",
+            "on-primary-fixed": "#3a0031",
+            "tertiary-container": "#b8b3ff",
+            "surface-container-high": "#e8e8ea",
+            "inverse-primary": "#ffade5",
+            "primary-container": "#ff99e2",
+            "outline-variant": "#d6c1cc",
+            "surface-bright": "#f9f9fb",
+            "surface-container-low": "#f3f3f5",
+            "on-tertiary-fixed-variant": "#3e34a5",
+            "primary": "#943e80",
+            "inverse-on-surface": "#f0f0f2",
+            "surface-container-lowest": "#ffffff",
+            "on-error-container": "#93000a",
+            "on-primary-fixed-variant": "#782567",
+            "on-primary": "#ffffff",
+            "on-background": "#1a1c1d"
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="layout-styles">
+    body {
+      background-color: #f9f9fb;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .card-shadow {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    }
+  </style>
+</head>
+<body class="font-sans text-gray-900 pb-32">
+<!-- BEGIN: Top Navigation -->
+<header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md px-6 py-4 flex justify-between items-center" data-purpose="header"><div class="flex items-center gap-4">
+<div class="relative" data-purpose="notification-bell">
+<div class="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full"><img alt="Notificações" class="w-7 h-7 opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAclN98hiLxnKaDZd_9uBXM5rvIfXEheailefiqxLmMsClKmCIcJ0a-z4ovxR_ZHPjc9cU0NJIXoORfmwkqVFfzHPjiYYJ8gxI1gvTX1hzqSflp5rg2zaGOBca0RVFakEVb2aVtcOAxjmZF044Mm7Od-mIoPPKMgEL9NqZxx4gTLubVQge4rzdegVxrtcvhAU1IvgDt3MDY7645WneWvQvqNjp1h3-khKM4Y_zFXtvsc6ZjySfD0xEKGPfnFBmHpCGV2r1gnD2vbhw"></div>
+
+</div>
+</div>
+<div class="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full" data-purpose="user-profile-shortcut"><img alt="Perfil" class="w-7 h-7 opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBPU2c96Gu9eK8YNi9GKACSpBft692ApCNeEYP1cCKi2J5QoTT5Mczqsnn2r-QqhEMN6GyWSY4Y3XDWonZ55CZA0WGkUFiQYIxW7XJgRq31Bal57VpBqqH-Pg2t_K1rzYXKpDy_XT6LBkzIx0N6N8TxExxCSvT522sWKNUf1-stHn9nZpjeprWyg8jxnq9Hr0lCcGTWCjnWlRJbkfk2T90g2BXN2QQ31U9qSDzZRwOtEv3WfZcYi17a4LrBVcmJ0hycLQMco3wvKY"></div></header>
+<!-- END: Top Navigation -->
+<main class="px-6 space-y-6 pt-4">
+<!-- BEGIN: Categories Section -->
+<section data-purpose="categories-filter">
+<div class="flex items-center gap-2 mb-4">
+<div class="p-1.5 bg-gray-200 rounded-lg">
+<img alt="Categorias" class="w-5 h-5 opacity-50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxh0lPtgbfiLhaAeZHm1l8qFiPCjneAKiVABpwMw-z3Xset6PqODtOF8zJRgs_6VZWq2YfPL43MZnbzKsRDNRLHz5Azikn7VY_yWg604WDQGaZHXBJKKRQ2v5mioYxzpxPKJd48v3FHITatviRu_fnv1WnJCBdu7Z8xcVkawj1oXlVvwLB49EZeOYbJAXve3qwBCeqgsPLct-clR-eau_ydI6KqjK8p75fXLwx9MtEDpYWSdPNVJcPbPzgl5ZAqAXLbUqG3QZajVo">
+</div>
+<h2 class="text-lg font-bold text-gray-600">Categorias</h2>
+</div>
+<div class="flex overflow-x-auto no-scrollbar gap-3 pb-2">
+<button class="bg-[#ff99e2] text-white font-bold py-4 px-5 rounded-2xl flex items-center gap-2 flex-shrink-0">
+<span class="text-xl">+</span> Curtidas
+        </button>
+<button class="bg-[#fcd3ee] font-bold py-4 px-8 rounded-2xl flex-shrink-0 text-white">
+          Bombando
+        </button>
+<button class="bg-[#ffb347] text-white font-bold py-4 px-8 rounded-2xl flex-shrink-0">
+          Métodos
+        </button>
+</div>
+</section>
+<!-- END: Categories Section -->
+<!-- BEGIN: Feed List -->
+<div class="space-y-4 pb-12" data-purpose="social-feed">
+<!-- Card 1: Luana Pires -->
+<article class="bg-white rounded-[32px] p-6 card-shadow" data-purpose="feed-card">
+<div class="flex justify-between items-start mb-5">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center overflow-hidden">
+<img alt="Luana Pires" class="w-7 h-7 opacity-40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBl79UJy0H-4hjauppw7DXmYxXNjELE35wvQu-rmlHnrF_VjWvwx8_0PVnbbo56Larbz9EvgOFjCS7dAg-3K26K76SDAeFjyEcilrgKlDLOHk1weI_DMmAxdwp9Cj3ZrQkCvmlzAVgxZnCmc18vV0w_smAyYvhMztay4-E29ZIv7BTJYFViF4VR6FhJ7E-OJJSRcDS1c1PmHXSodI1mNAxrP9fdLZGrezEsKVYRmfsKRW9Wt2d_iILZof4LpmvfRbvbKYuHje6umtE">
+</div>
+<h3 class="text-xl font-bold text-on-surface">Luana Pires</h3>
+</div>
+<span class="bg-[#fcd3ee] px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider text-white">Leitura</span>
+</div>
+<div class="mb-8">
+<p class="text-[17px] leading-relaxed text-on-surface">
+            recomendo bastante pequeno príncipe para pessoas entre 8 as 15 anos
+          </p>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<img alt="Likes" class="w-6 h-6 opacity-40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYCmznwVLWZnpxbo5LMposuhch1wrJk34m_7eUaZKIYhfPafpBnJDESIUYj1xmLi6EMXxrrH32bL2aEDikD5RTEJ6p1H855AO9x7zwQDztCIRT9qN_6MzlGM9C_b0hlfXFhgYJL30qnJ9xiOQllPgR9D2K7vNdfN1g5b9-RCde1BayPdmselR-VsY-WFPoBhahVWHr7rbXNd3AlGxE2SfqtqLZjynyuc9kwHMkwMnOOLwLrAEUzQDaw_ypjvlp5LbisJESCNfcvvw">
+<span class="font-bold text-gray-400">3</span>
+</div>
+<div class="flex items-center gap-2">
+<img alt="Views" class="w-6 h-6 opacity-40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdxFSTl8xzJVFOw3MPDZTWX6iTQ-nQ6cX5upGtWpBPWLHK06YPVQSklr5-bG9kJ6hOWw4LrxFeYD6j5JNqN58Wi6gFrh3oPD_0kTsX7BfrKJcDSNOoiANBxePVcnQk-g5Ld408O2ofkZHEEXXyWU3k_eeYFMALVgCd27_Q7L_8CqQcJk8M-b6L-ViPKSejE2gQQfDARKbp30jmSCu56gWT2YzsdrcWWXLBwiZUlDtIIrbhlCTV7FnGF7QnK1_A4LP-1xT8Stzunvg">
+<span class="font-bold text-gray-400">20</span>
+</div>
+</div>
+<button class="opacity-40">
+<img alt="Salvar" class="w-6 h-6" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJu9Aa09T-MfJDoXkWoEXn8WYbP3rOIbNz_ljwv1K28yp2hEbMYIfXcVtQHtPTd6feA-GhDu1_W_HzYYMLJI7YrhrJLfanCIFy5O4CszOz-KE8z7QYJ9EXqZQeXJXoSS3ZavE9NC2c3Zx1tsHJbG2Ml5ZVY6Gr8XpCF1H1E1A_lox-0SLR8bsuFE-I61UjcxBObAqaTOrFwhz2m1khBXbm01t_tpI6sSrw7MgZ-Xw25AeRrQcrefQyeQiZmhM0HmSv8B91lLUgfQ8">
+</button>
+</div>
+</article>
+<!-- Card 2: Beatriz Costa -->
+<article class="bg-white rounded-[32px] p-6 card-shadow relative" data-purpose="feed-card">
+<div class="flex justify-between items-start mb-5">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center overflow-hidden">
+<img alt="Beatriz Costa" class="w-7 h-7 opacity-40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBl79UJy0H-4hjauppw7DXmYxXNjELE35wvQu-rmlHnrF_VjWvwx8_0PVnbbo56Larbz9EvgOFjCS7dAg-3K26K76SDAeFjyEcilrgKlDLOHk1weI_DMmAxdwp9Cj3ZrQkCvmlzAVgxZnCmc18vV0w_smAyYvhMztay4-E29ZIv7BTJYFViF4VR6FhJ7E-OJJSRcDS1c1PmHXSodI1mNAxrP9fdLZGrezEsKVYRmfsKRW9Wt2d_iILZof4LpmvfRbvbKYuHje6umtE">
+</div>
+<h3 class="text-xl font-bold text-on-surface">Luana Pires</h3>
+</div>
+<span class="bg-[#ffe8d1] px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider text-white">Métodos</span>
+</div>
+<div class="mb-5">
+<p class="text-[17px] leading-relaxed mb-4 text-on-surface">
+            Minha turma teve uma atividade em grupo, que deu muito certo
+          </p>
+<!-- Featured Image -->
+<div class="rounded-[28px] overflow-hidden h-44 bg-gray-100">
+<img alt="Classroom activity" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFN4bzU63mXC2dpUJpN3IuGjaOMUyBztCqJOSO0AUSYJkGMinA79AS5y3JQF8i08niEDYmd61bzfQF4nVNO-_UWXVI-oGorHbyMzMnOEBxPpJmxzHg6v5lZ7aWvFbOk-NG6TGHCYFkP3_1RYyxI9ECV4NRaaGUW_VkzBme5MPKuec3_23Vwr11qQIV179GOR1htXB2w_VMhAF0erNjG-dFsYjkX6uIwMG4WqKqmdJAMi_hgg9HTVYfv6qbob8emRQ57hp-x-9W_sA">
+</div>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<img alt="Likes" class="w-6 h-6 opacity-40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYCmznwVLWZnpxbo5LMposuhch1wrJk34m_7eUaZKIYhfPafpBnJDESIUYj1xmLi6EMXxrrH32bL2aEDikD5RTEJ6p1H855AO9x7zwQDztCIRT9qN_6MzlGM9C_b0hlfXFhgYJL30qnJ9xiOQllPgR9D2K7vNdfN1g5b9-RCde1BayPdmselR-VsY-WFPoBhahVWHr7rbXNd3AlGxE2SfqtqLZjynyuc9kwHMkwMnOOLwLrAEUzQDaw_ypjvlp5LbisJESCNfcvvw">
+<span class="font-bold text-gray-400">12</span>
+</div>
+<div class="flex items-center gap-2">
+<img alt="Views" class="w-6 h-6 opacity-40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdxFSTl8xzJVFOw3MPDZTWX6iTQ-nQ6cX5upGtWpBPWLHK06YPVQSklr5-bG9kJ6hOWw4LrxFeYD6j5JNqN58Wi6gFrh3oPD_0kTsX7BfrKJcDSNOoiANBxePVcnQk-g5Ld408O2ofkZHEEXXyWU3k_eeYFMALVgCd27_Q7L_8CqQcJk8M-b6L-ViPKSejE2gQQfDARKbp30jmSCu56gWT2YzsdrcWWXLBwiZUlDtIIrbhlCTV7FnGF7QnK1_A4LP-1xT8Stzunvg">
+<span class="font-bold text-gray-400">54</span>
+</div>
+</div>
+</div>
+<!-- Floating FAB placed visually near card as in ref -->
+<button class="absolute -bottom-6 right-0 bg-[#ff9947] text-white w-20 h-20 rounded-full shadow-2xl flex items-center justify-center transition-transform active:scale-95 z-40" data-purpose="fab-add-post">
+<svg class="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</button>
+</article>
+</div>
+<!-- END: Feed List -->
+</main>
+<!-- BEGIN: Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white px-8 py-4 flex justify-between items-center z-50 rounded-t-[32px] border-t border-gray-100" data-purpose="bottom-nav">
+<div class="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full"><img alt="Buscar" class="w-7 h-7 opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2wwFdMIKO3GhrYOmZP9iKb16KEqjivLrfKdKL9M49PXFoS7evW98ovXrsM4RZy0xS5H22u_Gdx2pk0bftg6xcxUHDiHlVzGaXLdApvoZgBPw-qau7LjnlEvrfJZwWwjj934Odqo_MTLdQIqvBOwNU9bSzDPBdTWqdPNhGViwrYyEm8qiFTgq6YGhmUPX8_09DNYW1Yg2r6Gb3ggvUQGOHcOQwWZCckItPy77JxApXTXfOQjYsH3_NzpSVutxIT-smFKGTPHfWeUM"></div>
+<div class="w-16 h-16 bg-black flex items-center justify-center text-white shadow-lg rounded-full"><img alt="Início" class="w-8 h-8 invert" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnJLC7wN1Rf5CmOG57essR0abO13Z84R8h2LUprVx6bccDCX09XEXeeK6-sjKGwfuNJDwNO5HhmVKwd5PBewfnCm5uNkHYf8j61dczG3NfKKBiLeW3Oiu_UXwTBNh4WIXjPTPyN1iR9icvbkEP63PWINnzAFk4FuxBXUz1PTCFIlRSIWte_6NXCNdLMWy4mUN0CAID_WSmVAMHp6AplLSVBP9_nUP0bqv_UK9fh_n6kHni5H8le0R_9bsdBxHZCyWUJauuXRle3IY"></div>
+<div class="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full"><img alt="Calendário" class="w-7 h-7 opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgJVHHt60KkAnOQgAd1KNPB2IkNHpOedFDLczoM0qMznx0Lofw3Fvwqu4GDYnxZw8t9_ZE9J3yepwmLHFDi6E6e9xyoXDJvsFjLLv-z8J4bkQeEKUvENoPjEEpcvTayfxBlkfJpSkldDzkKeRlp8I9Bmy56-ptkpJUMlgZwTYvURpL5yaXy2L-YwWwnwsClWmLLvZHrD9pwngZrN2lbEACfNN-tHZdcRUqLSIwalMpGx6gAoDv0nbN50vKQZhLj7uk7fnhqKsgNJg"></div>
+</nav>
+<!-- END: Bottom Navigation -->
+
+
+</body></html>

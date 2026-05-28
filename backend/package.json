@@ -1,0 +1,20 @@
+{
+  "name": "educonnect-backend",
+  "private": true,
+  "version": "0.0.0",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.0",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "mongodb": "^6.9.0",
+    "mongodb-memory-server": "^10.1.4",
+    "multer": "^1.4.5-lts.1"
+  }
+}

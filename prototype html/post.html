@@ -1,0 +1,195 @@
+<!-- Criar Postagem - EduConnect -->
+<!DOCTYPE html><html class="light" lang="pt-br" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>EduConnect - Criar Postagem</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#1a1c1d",
+                        "surface-tint": "#943e80",
+                        "surface-container-highest": "#e2e2e4",
+                        "inverse-primary": "#ffade5",
+                        "secondary-fixed-dim": "#c4c1fb",
+                        "primary": "#943e80",
+                        "on-secondary-fixed-variant": "#434173",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#574fbe",
+                        "outline": "#84727c",
+                        "on-primary-fixed-variant": "#782567",
+                        "on-primary-fixed": "#3a0031",
+                        "on-tertiary-fixed-variant": "#3e34a5",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f3f3f5",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "secondary-container": "#c6c3fe",
+                        "on-tertiary-fixed": "#130068",
+                        "on-secondary-container": "#514f82",
+                        "secondary": "#5b598d",
+                        "surface-dim": "#d9dadc",
+                        "background": "#f9f9fb",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#1a1c1d",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#ffade5",
+                        "primary-container": "#ff99e2",
+                        "tertiary-container": "#b8b3ff",
+                        "outline-variant": "#d6c1cc",
+                        "surface-container": "#eeeef0",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#f9f9fb",
+                        "on-secondary-fixed": "#171445",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#c4c0ff",
+                        "surface-variant": "#e2e2e4",
+                        "surface-container-high": "#e8e8ea",
+                        "surface": "#f9f9fb",
+                        "on-surface-variant": "#51434b",
+                        "inverse-surface": "#2f3132",
+                        "inverse-on-surface": "#f0f0f2",
+                        "on-tertiary-container": "#4339a9",
+                        "on-primary-container": "#7c296b",
+                        "secondary-fixed": "#e3dfff",
+                        "primary-fixed": "#ffd7ef",
+                        "tertiary-fixed": "#e3dfff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "64px",
+                        "xl": "80px",
+                        "sm": "12px",
+                        "xs": "4px",
+                        "gutter": "20px",
+                        "lg": "48px",
+                        "margin-mobile": "16px",
+                        "base": "8px",
+                        "md": "24px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"],
+                        "headline-xl": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "body-sm": ["Inter"],
+                        "headline-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", {"lineHeight": "14px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f9f9fb;
+            color: #1a1c1d;
+        }
+        .chip-shadow {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .main-card-shadow {
+            box-shadow: 0 16px 32px rgba(91, 89, 141, 0.04);
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md min-h-screen flex flex-col items-center">
+<!-- Top Navigation Shell (Suppressed for focused task, but TopAppBar component used for Header) -->
+<header class="w-full max-w-xl flex justify-between items-center px-margin-mobile h-16 bg-transparent">
+<div class="p-2 cursor-pointer hover:bg-surface-container-low transition-colors rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined text-on-surface-variant text-[32px]">close</span>
+</div>
+<div class="hidden">
+<!-- Trailing action hidden from header as per reference structure where it is at bottom -->
+</div>
+</header>
+<main class="w-full max-w-xl px-margin-mobile flex flex-col gap-6">
+<!-- Categories Section -->
+<div class="bg-surface-container-lowest rounded-2xl p-md main-card-shadow flex flex-col gap-4">
+<div class="flex items-center gap-2">
+<img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0D6g0aiMww_TCoqfeaHr-hCGkDM4PBNf-L8x4fuWBLjVSC5M9F1Fszotl07PziXSBW0UosKdTabwcv8coO9gGyDJ9KrE-BssaY-DXIEjr5cKNRNOv2hi9yvebTLyCdno4KNd4HF2Loy9ryfQ5ZumTld16ekDJkAyoq_zPZu-fQwCnXNwQXcUY17AbQBAgbKAVuJEOt8QfKr0UiL7q44K5xPEDMlO_Hg5IahhcnuSEjCGWfBvUvjyUL_e0k284_-FF9q_v2ICIFvY" class="w-8 h-8" alt="Categorias">
+<h1 class="font-headline-md text-headline-md text-on-surface">Categorias</h1>
+</div>
+<div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar flex-nowrap">
+<!-- Métodos Chip -->
+<button class="px-6 py-2 bg-[#FFAB6D] text-white font-label-md text-label-md rounded-full active:scale-95 transition-transform chip-shadow">
+                    Métodos
+                </button>
+<!-- Leitura Chip -->
+<button class="px-6 py-2 bg-[#FF85D1] text-white font-label-md text-label-md rounded-full active:scale-95 transition-transform chip-shadow">
+                    Leitura
+                </button>
+<!-- Registro Chip -->
+<button class="px-6 py-2 bg-[#A3A1FF] text-white font-label-md text-label-md rounded-full active:scale-95 transition-transform chip-shadow">
+                    Registro
+                </button>
+</div>
+</div>
+<!-- Toolbar & Input Area -->
+<div class="flex flex-col gap-3">
+<!-- Attachment Toolbar -->
+<div class="flex justify-end items-center gap-4 px-2">
+<button class="text-on-surface-variant hover:text-primary transition-colors active:scale-90">
+<span class="material-symbols-outlined text-[32px]">attach_file</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors active:scale-90">
+<span class="material-symbols-outlined text-[32px]">image</span>
+</button>
+</div>
+<!-- Text Input Container -->
+<div class="w-full bg-surface-container-lowest rounded-2xl min-h-[400px] p-md main-card-shadow focus-within:ring-2 focus-within:ring-primary-container transition-all">
+<textarea class="w-full h-full border-none focus:ring-0 bg-transparent font-body-lg text-body-lg text-on-surface placeholder-outline-variant resize-none" placeholder="Escreva aqui..." rows="15"></textarea>
+</div>
+</div>
+<!-- Submit Button -->
+<div class="flex justify-end pb-xl">
+<button class="bg-[#8E9196] text-white font-headline-md text-headline-md px-12 py-3 rounded-full hover:bg-on-surface-variant active:scale-95 transition-all shadow-lg">
+                Postar
+            </button>
+</div>
+</main>
+<!-- Background Decoration (Soft UI aesthetic) -->
+<div class="fixed top-0 left-0 w-full h-full -z-10 overflow-hidden pointer-events-none">
+<div class="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary-fixed opacity-20 blur-[100px] rounded-full"></div>
+<div class="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-tertiary-fixed opacity-20 blur-[100px] rounded-full"></div>
+</div>
+<script>
+        // Simple micro-interaction for chips
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (this.classList.contains('bg-white')) {
+                    // Logic for toggling if needed
+                }
+            });
+        });
+    </script>
+
+
+</body></html>

@@ -1,0 +1,19 @@
+{
+  "name": "educonnect",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "start": "npm run dev",
+    "dev:frontend": "npm --prefix frontend run dev -- --host",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev": "concurrently \"npm:dev:frontend\" \"npm:dev:backend\"",
+    "build": "npm --prefix frontend run build"
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.0"
+  }
+}

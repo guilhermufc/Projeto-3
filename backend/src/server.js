@@ -16,7 +16,16 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-producti
 
 const uploadDir = path.join(process.cwd(), 'uploads')
 fs.mkdirSync(uploadDir, { recursive: true })
-const upload = multer({ dest: uploadDir })
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: (_req, _file, cb) => cb(null, uploadDir),
+    filename: (_req, file, cb) => {
+      const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`
+      const extension = path.extname(file.originalname || '')
+      cb(null, `${uniqueSuffix}${extension}`)
+    },
+  }),
+})
 
 let mongoClient
 let mongoMemoryServer
@@ -58,16 +67,26 @@ const serializePost = (post) => ({
   id: post._id.toString(),
   user_id: post.userId?.toString?.() || post.userId,
   author: post.author,
+  title: post.title,
+  categories: post.categories || [],
   content: post.content,
   image: post.image || null,
-  likes: post.likes || 0,
-  views: post.views || 0,
+  attachments: post.attachments || [],
+  saved_count: post.savedBy?.length || 0,
   created_at: post.createdAt || null,
 })
 
-const seedDatabase = async () => {
+const resetDatabaseWithDefaultAdmin = async () => {
+  const defaultAdmin = {
+    username: 'admin',
+    email: 'admin@educonnect.local',
+    password: bcrypt.hashSync('admin', 8),
+    createdAt: new Date(),
+  }
+
   await postsCollection.deleteMany({})
   await usersCollection.deleteMany({})
+  await usersCollection.insertOne(defaultAdmin)
 }
 
 const connectDatabase = async () => {
@@ -91,7 +110,7 @@ const connectDatabase = async () => {
   await usersCollection.createIndex({ email: 1 }, { unique: true })
   await postsCollection.createIndex({ createdAt: -1 })
 
-  await seedDatabase()
+  await resetDatabaseWithDefaultAdmin()
 }
 
 app.get('/api/health', (_req, res) => {
@@ -135,30 +154,99 @@ app.post('/api/auth/login', async (req, res) => {
 app.get('/api/posts', verifyToken, async (_req, res) => {
   try {
     const posts = await postsCollection.find({}).sort({ createdAt: -1 }).toArray()
-    res.json(posts.map(serializePost))
+    res.json(posts.map((post) => ({
+      ...serializePost(post),
+      is_saved: (post.savedBy || []).includes(_req.userId),
+    })))
   } catch (error) {
     res.status(500).json({ message: 'Erro ao buscar posts' })
   }
 })
 
-app.post('/api/posts', verifyToken, upload.single('image'), async (req, res) => {
-  const { content } = req.body
+app.post('/api/posts/:postId/save', verifyToken, async (req, res) => {
+  try {
+    const { postId } = req.params
+    const userId = req.userId
 
-  if (!content) {
-    return res.status(400).json({ message: 'Conteúdo é obrigatório' })
+    if (!ObjectId.isValid(postId)) {
+      return res.status(400).json({ message: 'Post inválido' })
+    }
+
+    const postObjectId = new ObjectId(postId)
+    const post = await postsCollection.findOne({ _id: postObjectId })
+
+    if (!post) {
+      return res.status(404).json({ message: 'Post não encontrado' })
+    }
+
+    const savedBy = post.savedBy || []
+    const isSaved = savedBy.includes(userId)
+
+    if (isSaved) {
+      await postsCollection.updateOne(
+        { _id: postObjectId },
+        { $pull: { savedBy: userId } },
+      )
+    } else {
+      await postsCollection.updateOne(
+        { _id: postObjectId },
+        { $addToSet: { savedBy: userId } },
+      )
+    }
+
+    const updatedPost = await postsCollection.findOne({ _id: postObjectId })
+
+    res.json({
+      message: isSaved ? 'Salvamento removido' : 'Post salvo com sucesso',
+      post: {
+        ...serializePost(updatedPost),
+        is_saved: !isSaved,
+      },
+    })
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao alternar salvamento' })
+  }
+})
+
+app.post('/api/posts', verifyToken, upload.single('image'), async (req, res) => {
+  const { title, content } = req.body
+  const categoriesInput = req.body.categories
+
+  if (!title || !content) {
+    return res.status(400).json({ message: 'Título e conteúdo são obrigatórios' })
   }
 
   try {
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null
+    let categories = []
+
+    if (categoriesInput) {
+      try {
+        categories = JSON.parse(categoriesInput)
+      } catch (_error) {
+        categories = []
+      }
+    }
+
+    const image = req.file ? `/uploads/${req.file.filename}` : null
+    const attachments = req.file
+      ? [{
+          name: req.file.originalname,
+          url: `/uploads/${req.file.filename}`,
+          mimetype: req.file.mimetype,
+          size: req.file.size,
+        }]
+      : []
     const userId = new ObjectId(req.userId)
 
     await postsCollection.insertOne({
       userId,
       author: req.username,
+      title,
+      categories,
       content,
-      image: imageUrl,
-      likes: 0,
-      views: 0,
+      image,
+      attachments,
+      savedBy: [],
       createdAt: new Date(),
     })
 

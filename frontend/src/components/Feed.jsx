@@ -7,6 +7,17 @@ export default function Feed() {
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState(null)
   const navigate = useNavigate()
+  const resolveImageUrl = (imagePath) => {
+    if (!imagePath) {
+      return ''
+    }
+
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      return imagePath
+    }
+
+    return `http://localhost:3000${imagePath}`
+  }
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user')
@@ -40,6 +51,34 @@ export default function Feed() {
       }
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleToggleSave = async (postId) => {
+    try {
+      const token = localStorage.getItem('token')
+      const response = await axios.post(`http://localhost:3000/api/posts/${postId}/save`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+
+      const updatedPost = response.data?.post
+
+      if (updatedPost) {
+        setPosts((currentPosts) =>
+          currentPosts.map((post) =>
+            post.id === postId
+              ? { ...post, saved_count: updatedPost.saved_count, is_saved: updatedPost.is_saved }
+              : post,
+          ),
+        )
+      }
+    } catch (error) {
+      console.error('Erro ao salvar post:', error)
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        navigate('/login')
+      }
     }
   }
 
@@ -84,39 +123,60 @@ export default function Feed() {
           ) : (
             posts.map((post) => (
               <article key={post.id} className="bg-white rounded-[32px] p-6 card-shadow">
-                <div className="flex items-start mb-5">
+                <div className="flex items-start justify-between mb-5">
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center overflow-hidden">
                       <span className="fi fi-br-circle-user text-[28px] opacity-40" aria-hidden="true" />
                     </div>
-                    <h3 className="text-xl font-bold text-on-surface">{post.author}</h3>
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-500">{post.author}</h3>
+                      {post.title && <p className="text-2xl font-extrabold leading-tight text-on-surface">{post.title}</p>}
+                    </div>
+                  </div>
+
+                  {/* Save icon where the heart used to be (right side of header) */}
+                  <div className="flex flex-col items-center ml-4">
+                    <button
+                      type="button"
+                      onClick={() => handleToggleSave(post.id)}
+                      className="w-10 h-10 flex items-center justify-center rounded-full transition-colors"
+                      aria-pressed={Boolean(post.is_saved)}
+                      title={post.is_saved ? 'Remover salvo' : 'Salvar'}
+                    >
+                      <span
+                        className={`fi fi-br-bookmark text-[20px] ${post.is_saved ? 'text-[#ff9947] opacity-100' : 'text-gray-400 opacity-60'}`}
+                        aria-hidden="true"
+                      />
+                    </button>
+                    <span className="text-xs text-gray-600 mt-1">{post.saved_count || 0}</span>
                   </div>
                 </div>
+
                 <div className="mb-8">
                   <p className="text-[17px] leading-relaxed text-on-surface">
                     {post.content}
                   </p>
+
+                  {/* Image preview inside text container, below all text */}
+                  {post.image && (
+                    <div className="rounded-[28px] overflow-hidden bg-gray-100 mt-4">
+                      <img alt="Post" className="w-full h-auto object-contain" src={resolveImageUrl(post.image)} />
+                    </div>
+                  )}
                 </div>
-                {post.image && (
-                  <div className="rounded-[28px] overflow-hidden h-44 bg-gray-100 mb-4">
-                    <img alt="Post" className="w-full h-full object-cover" src={post.image} />
+
+                {post.categories?.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {post.categories.map((category) => (
+                      <span
+                        key={`${post.id}-${category}`}
+                        className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600"
+                      >
+                        {category}
+                      </span>
+                    ))}
                   </div>
                 )}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-6">
-                    <div className="flex items-center gap-2">
-                      <span className="fi fi-br-heart text-[18px] opacity-40" aria-hidden="true" />
-                      <span className="font-bold text-gray-400">{post.likes || 0}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="fi fi-br-eye text-[18px] opacity-40" aria-hidden="true" />
-                      <span className="font-bold text-gray-400">{post.views || 0}</span>
-                    </div>
-                  </div>
-                  <button className="opacity-40 hover:opacity-100 transition-opacity">
-                    <span className="fi fi-br-bookmark text-[18px]" aria-hidden="true" />
-                  </button>
-                </div>
               </article>
             ))
           )}

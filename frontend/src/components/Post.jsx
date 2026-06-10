@@ -2,11 +2,28 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
-const categoryOptions = ['Métodos', 'Leitura', 'Registro']
+const categoryOptions = ['Métodos', 'Leitura', 'Registro', 'Tutorial', 'Dica', 'Pergunta', 'Resposta', 'Artigo', 'Vídeo', 'Experiência', 'Projeto', 'Recurso', 'Dúvida', 'Discussão', 'Evento', 'Anúncio', 'Caso de Uso', 'Pesquisa', 'Ferramenta', 'Desafio']
 const categoryStyles = {
   Métodos: 'bg-[#FFAB6D] text-white',
   Leitura: 'bg-[#FF85D1] text-white',
   Registro: 'bg-[#A3A1FF] text-white',
+  Tutorial: 'bg-[#5BA3FF] text-white',
+  Dica: 'bg-[#FF6B9D] text-white',
+  Pergunta: 'bg-[#FFC75F] text-white',
+  Resposta: 'bg-[#88D498] text-white',
+  Artigo: 'bg-[#FF9E64] text-white',
+  Vídeo: 'bg-[#7AA2F7] text-white',
+  Experiência: 'bg-[#BB9AF7] text-white',
+  Projeto: 'bg-[#7DCFFF] text-white',
+  Recurso: 'bg-[#9ECE6A] text-white',
+  Dúvida: 'bg-[#E0AF68] text-white',
+  Discussão: 'bg-[#73DACA] text-white',
+  Evento: 'bg-[#F7768E] text-white',
+  Anúncio: 'bg-[#FF007F] text-white',
+  'Caso de Uso': 'bg-[#00D9FF] text-white',
+  Pesquisa: 'bg-[#B469D9] text-white',
+  Ferramenta: 'bg-[#FFD700] text-white',
+  Desafio: 'bg-[#FF4500] text-white',
 }
 
 export default function Post() {

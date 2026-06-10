@@ -156,7 +156,7 @@ export default function Post() {
                 />
               </div>
 
-              <div className="flex items-end justify-between gap-4 mt-4">
+              <div className="flex flex-col gap-4 mt-4">
                 {imagePreviewUrl && (
                   <div className="overflow-hidden rounded-[16px] bg-surface-container-highest w-32 h-32">
                     <img
@@ -166,14 +166,16 @@ export default function Post() {
                     />
                   </div>
                 )}
-                <button
-                  type="button"
-                  onClick={openAttachmentPicker}
-                  className="text-on-surface-variant hover:text-primary transition-colors active:scale-90"
-                  aria-label="Adicionar imagem"
-                >
-                  <span className="material-symbols-outlined text-[32px]" aria-hidden="true">image</span>
-                </button>
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    onClick={openAttachmentPicker}
+                    className="text-on-surface-variant hover:text-primary transition-colors active:scale-90"
+                    aria-label="Adicionar imagem"
+                  >
+                    <span className="material-symbols-outlined text-[32px]" aria-hidden="true">image</span>
+                  </button>
+                </div>
               </div>
             </div>
 

@@ -148,19 +148,6 @@ export default function Feed() {
                   )}
                 </div>
 
-                {post.categories?.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {post.categories.map((category) => (
-                      <span
-                        key={`${post.id}-${category}`}
-                        className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600"
-                      >
-                        {category}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
                 {/* Save button below image/content, aligned left */}
                 <div className="flex items-center justify-start">
                   <button

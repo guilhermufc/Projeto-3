@@ -19,6 +19,7 @@ export default function Post() {
   const [error, setError] = useState('')
   const navigate = useNavigate()
   const attachmentInputRef = useRef(null)
+  const textareaRef = useRef(null)
 
   const toggleCategory = (category) => {
     setSelectedCategories((currentCategories) =>
@@ -58,7 +59,12 @@ export default function Post() {
   }, [selectedImage])
 
   useEffect(() => {
-  }, [selectedImage])
+    // Auto-grow textarea based on content
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto'
+      textareaRef.current.style.height = `${Math.max(textareaRef.current.scrollHeight, 120)}px`
+    }
+  }, [content])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -150,20 +156,21 @@ export default function Post() {
                 </button>
 
                 <textarea
-                  className="w-full border-none focus:ring-0 bg-transparent font-body-lg text-body-lg text-on-surface placeholder-outline-variant resize-none pr-12 min-h-[400px]"
+                  ref={textareaRef}
+                  className="w-full border-none focus:ring-0 bg-transparent font-body-lg text-body-lg text-on-surface placeholder-outline-variant resize-none pr-12 overflow-hidden"
                   placeholder="Escreva aqui..."
-                  rows="15"
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
+                  rows="4"
                 />
               </div>
 
               {imagePreviewUrl && (
-                <div className="overflow-hidden rounded-[28px] bg-surface-container-highest mt-4">
+                <div className="overflow-hidden rounded-[16px] bg-surface-container-highest mt-4 w-32 h-32">
                   <img
                     src={imagePreviewUrl}
                     alt="Pré-visualização da imagem"
-                    className="h-auto w-full object-contain"
+                    className="h-full w-full object-cover"
                   />
                 </div>
               )}

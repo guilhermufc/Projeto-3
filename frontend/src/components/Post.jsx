@@ -149,7 +149,7 @@ export default function Post() {
                 <button
                   type="button"
                   onClick={openAttachmentPicker}
-                  className="absolute right-4 top-4 z-10 text-on-surface-variant hover:text-primary transition-colors active:scale-90"
+                  className="absolute right-4 bottom-4 z-10 text-on-surface-variant hover:text-primary transition-colors active:scale-90"
                   aria-label="Adicionar imagem"
                 >
                   <span className="material-symbols-outlined text-[32px]" aria-hidden="true">image</span>

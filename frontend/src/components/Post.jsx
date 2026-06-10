@@ -156,7 +156,7 @@ export default function Post() {
                 />
               </div>
 
-              <div className="flex items-end gap-4 mt-4">
+              <div className="flex items-end justify-between gap-4 mt-4">
                 {imagePreviewUrl && (
                   <div className="overflow-hidden rounded-[16px] bg-surface-container-highest w-32 h-32">
                     <img

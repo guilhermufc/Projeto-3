@@ -145,25 +145,14 @@ export default function Post() {
 
           <div className="flex flex-col gap-3">
             <div className="bg-surface-container-lowest rounded-2xl p-md main-card-shadow focus-within:ring-2 focus-within:ring-primary-container transition-all">
-              <div className="relative w-full">
-                <button
-                  type="button"
-                  onClick={openAttachmentPicker}
-                  className="absolute right-4 bottom-4 z-10 text-on-surface-variant hover:text-primary transition-colors active:scale-90"
-                  aria-label="Adicionar imagem"
-                >
-                  <span className="material-symbols-outlined text-[32px]" aria-hidden="true">image</span>
-                </button>
-
-                <textarea
-                  ref={textareaRef}
-                  className="w-full border-none focus:ring-0 bg-transparent font-body-lg text-body-lg text-on-surface placeholder-outline-variant resize-none pr-12 overflow-hidden"
-                  placeholder="Escreva aqui..."
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  rows="4"
-                />
-              </div>
+              <textarea
+                ref={textareaRef}
+                className="w-full border-none focus:ring-0 bg-transparent font-body-lg text-body-lg text-on-surface placeholder-outline-variant resize-none overflow-hidden"
+                placeholder="Escreva aqui..."
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                rows="4"
+              />
 
               {imagePreviewUrl && (
                 <div className="overflow-hidden rounded-[16px] bg-surface-container-highest mt-4 w-32 h-32">
@@ -174,6 +163,17 @@ export default function Post() {
                   />
                 </div>
               )}
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={openAttachmentPicker}
+                className="text-on-surface-variant hover:text-primary transition-colors active:scale-90"
+                aria-label="Adicionar imagem"
+              >
+                <span className="material-symbols-outlined text-[32px]" aria-hidden="true">image</span>
+              </button>
             </div>
 
             <div className="bg-surface-container-lowest rounded-2xl p-md main-card-shadow flex flex-col gap-4">

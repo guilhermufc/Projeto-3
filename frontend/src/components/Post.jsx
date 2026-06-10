@@ -138,34 +138,36 @@ export default function Post() {
           </div>
 
           <div className="flex flex-col gap-3">
-            <div className="relative w-full bg-surface-container-lowest rounded-2xl min-h-[400px] p-md main-card-shadow focus-within:ring-2 focus-within:ring-primary-container transition-all">
-              <button
-                type="button"
-                onClick={openAttachmentPicker}
-                className="absolute right-4 top-4 z-10 text-on-surface-variant hover:text-primary transition-colors active:scale-90"
-                aria-label="Adicionar imagem"
-              >
-                <span className="material-symbols-outlined text-[32px]" aria-hidden="true">image</span>
-              </button>
+            <div className="bg-surface-container-lowest rounded-2xl p-md main-card-shadow focus-within:ring-2 focus-within:ring-primary-container transition-all">
+              <div className="relative w-full">
+                <button
+                  type="button"
+                  onClick={openAttachmentPicker}
+                  className="absolute right-4 top-4 z-10 text-on-surface-variant hover:text-primary transition-colors active:scale-90"
+                  aria-label="Adicionar imagem"
+                >
+                  <span className="material-symbols-outlined text-[32px]" aria-hidden="true">image</span>
+                </button>
 
-              <textarea
-                className="w-full h-full border-none focus:ring-0 bg-transparent font-body-lg text-body-lg text-on-surface placeholder-outline-variant resize-none pr-12"
-                placeholder="Escreva aqui..."
-                rows="15"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-              />
-            </div>
-
-            {imagePreviewUrl && (
-              <div className="overflow-hidden rounded-[28px] bg-surface-container-highest">
-                <img
-                  src={imagePreviewUrl}
-                  alt="Pré-visualização da imagem"
-                  className="h-auto w-full object-contain"
+                <textarea
+                  className="w-full border-none focus:ring-0 bg-transparent font-body-lg text-body-lg text-on-surface placeholder-outline-variant resize-none pr-12 min-h-[400px]"
+                  placeholder="Escreva aqui..."
+                  rows="15"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
                 />
               </div>
-            )}
+
+              {imagePreviewUrl && (
+                <div className="overflow-hidden rounded-[28px] bg-surface-container-highest mt-4">
+                  <img
+                    src={imagePreviewUrl}
+                    alt="Pré-visualização da imagem"
+                    className="h-auto w-full object-contain"
+                  />
+                </div>
+              )}
+            </div>
 
             <div className="bg-surface-container-lowest rounded-2xl p-md main-card-shadow flex flex-col gap-4">
               <div className="flex items-center gap-2">
@@ -201,7 +203,7 @@ export default function Post() {
             className="hidden"
           />
 
-          <div className="flex justify-end pb-xl">
+          <div className="flex justify-start pb-xl">
             <button
               type="submit"
               disabled={loading}

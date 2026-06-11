@@ -6,8 +6,15 @@ export default function Profile() {
 
   const user = JSON.parse(localStorage.getItem('user'))
   const [nome, setNome] = useState(user?.username || 'Usuário')
-  const [bio, setBio] = useState('')
+  const [bio, setBio] = useState(user?.bio || '')
   const [foto, setFoto] = useState(null)
+
+  const [nomeSalvo, setNomeSalvo] = useState(user?.username || 'Usuário')
+const [bioSalva, setBioSalva] = useState(user?.bio || '')
+
+const houveAlteracao =
+  nome !== nomeSalvo ||
+  bio !== bioSalva
 
   function atualizarFoto(event) {
     const arquivo = event.target.files[0]
@@ -19,9 +26,9 @@ export default function Profile() {
   }
 
   function sair() {
-    alert(`Até logo, ${nome}! Fazendo logout...`)
-    navigate('/login')
-  }
+  localStorage.removeItem('user')
+  navigate('/login')
+}
   function salvarAlteracoes() {
     const user = JSON.parse(localStorage.getItem('user'))
 
@@ -32,6 +39,9 @@ export default function Profile() {
     }
 
     localStorage.setItem('user', JSON.stringify(usuarioAtualizado))
+
+    setNomeSalvo(nome)
+    setBioSalva(bio)
 
     alert('Alterações salvas com sucesso!')
   }
@@ -54,8 +64,10 @@ export default function Profile() {
           <div className="w-32 h-32 bg-[#A2E9A6] rounded-full flex items-center justify-center overflow-hidden border-4 border-white shadow-sm">
             {foto ? (
               <img src={foto} alt="Foto de perfil" className="w-full h-full object-cover" />
-            ) : (
-              <span className="text-white text-6xl">👤</span>
+                  ) : (
+              <span className="material-symbols-outlined text-white text-6xl">
+                account_circle
+          </span>
             )}
           </div>
 
@@ -99,18 +111,20 @@ export default function Profile() {
         </div>
 
         <button className="w-3/4 bg-white hover:bg-gray-50 text-gray-800 font-semibold py-5 px-6 rounded-xl flex items-center justify-center gap-3 shadow-xs border border-gray-100 transition-all active:scale-98 cursor-pointer">
-          <span className="text-[#A78BFA] text-lg">🔖</span>
+          <span className="material-symbols-outlined text-[#A78BFA] text-lg">
+            bookmark
+          </span>
           <span className="text-lg">Salvos</span>
         </button>
 
-        <button
-          onClick={salvarAlteracoes}
-          className="w-3/4 bg-white hover:bg-gray-50 text-gray-800 font-semibold py-5 px-6 rounded-xl flex items-center justify-center gap-3 shadow-xs border border-gray-100 transition-all active:scale-98 cursor-pointer"
+        {houveAlteracao && (
+        <button onClick={salvarAlteracoes}
+         className="w-3/4 bg-green-500 hover:bg-green-600 text-white font-semibold py-5 px-6 rounded-xl flex items-center justify-center gap-3 shadow-xs border border-green-500 transition-all active:scale-98 cursor-pointer"
         >
-          <span className="text-green-500 text-lg">✓</span>
-          <span className="text-lg">Salvar Alterações</span>
-      </button>
-
+        <span className="text-white text-lg">✓</span>
+        <span className="text-lg">Salvar Alterações</span>
+        </button>
+      )}
         <button
           onClick={sair}
           className="mt-2 w-32 bg-[#FF80DF] hover:bg-[#ff66d6] text-white font-medium py-2 rounded-full shadow-md transition-all active:scale-95 cursor-pointer text-center"

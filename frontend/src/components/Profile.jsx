@@ -6,56 +6,84 @@ export default function Profile() {
   const navigate = useNavigate()
 
   const user = JSON.parse(localStorage.getItem('user'))
+  const [fotoAlterada, setFotoAlterada] = useState(false)
   const [nome, setNome] = useState(user?.username || 'Usuário')
   const [bio, setBio] = useState(user?.bio || '')
-  const [foto, setFoto] = useState(null)
-
+  const [foto, setFoto] = useState(
+     user?.avatar ? `http://localhost:3000${user.avatar}` : null
+  )
   const [nomeSalvo, setNomeSalvo] = useState(user?.username || 'Usuário')
-const [bioSalva, setBioSalva] = useState(user?.bio || '')
+  const [bioSalva, setBioSalva] = useState(user?.bio || '')
+  const [fotoArquivo, setFotoArquivo] = useState(null)
+  const nomeAlterado = nome !== nomeSalvo
+  const bioAlterada = bio !== bioSalva
 
-const houveAlteracao =
-  nome !== nomeSalvo ||
-  bio !== bioSalva
+  const houveAlteracao =
+    nomeAlterado ||
+    bioAlterada ||
+    fotoAlterada
+
+  const apenasFotoAlterada =
+    fotoAlterada && !nomeAlterado && !bioAlterada
 
   function atualizarFoto(event) {
     const arquivo = event.target.files[0]
 
-    if (arquivo) {
-      const imagemUrl = URL.createObjectURL(arquivo)
-      setFoto(imagemUrl)
-    }
+      if (arquivo) {
+        const imagemUrl = URL.createObjectURL(arquivo)
+
+        setFoto(imagemUrl)
+        setFotoArquivo(arquivo)
+        setFotoAlterada(true)
+      }
   }
 
   function sair() {
   localStorage.removeItem('user')
   navigate('/login')
-}
-async function salvarAlteracoes() {
-  try {
-    const token = localStorage.getItem('token')
-
-    const response = await axios.put(
-      'http://localhost:3000/api/users/me',
-      {
-        username: nome,
-        bio: bio,
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      },
-    )
-
-    localStorage.setItem('user', JSON.stringify(response.data.user))
-    localStorage.setItem('token', response.data.token)
-
-    setNomeSalvo(response.data.user.username)
-    setBioSalva(response.data.user.bio)
-
-    alert('Alterações salvas com sucesso!')
-  } catch (error) {
-    alert(error.response?.data?.message || 'Erro ao salvar alterações')
   }
-}
+  async function salvarAlteracoes() {
+    try {
+      const token = localStorage.getItem('token')
+
+      const formData = new FormData()
+
+      formData.append('username', nome)
+      formData.append('bio', bio)
+
+      if (fotoArquivo) {
+        formData.append('avatar', fotoArquivo)
+      }
+
+      const response = await axios.put(
+        'http://localhost:3000/api/users/me',
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          
+          },
+        },
+      )
+
+      localStorage.setItem('user', JSON.stringify(response.data.user))
+      localStorage.setItem('token', response.data.token)
+
+      setNomeSalvo(response.data.user.username)
+      setBioSalva(response.data.user.bio)
+
+      if (response.data.user.avatar) {
+        setFoto(`http://localhost:3000${response.data.user.avatar}`)
+      }
+
+      setFotoAlterada(false)
+      setFotoArquivo(null)
+
+      alert('Alterações salvas com sucesso!')
+    } catch (error) {
+      alert(error.response?.data?.message || 'Erro ao salvar alterações')
+    }
+  }
   return (
     <main className="min-h-screen font-sans p-4 bg-[#F4F4F4] flex justify-center pt-8">
       <div className="relative w-full max-w-md bg-[#F4F4F4] p-6 rounded-3xl flex flex-col items-center gap-9">
@@ -133,7 +161,9 @@ async function salvarAlteracoes() {
          className="w-3/4 bg-green-500 hover:bg-green-600 text-white font-semibold py-5 px-6 rounded-xl flex items-center justify-center gap-3 shadow-xs border border-green-500 transition-all active:scale-98 cursor-pointer"
         >
         <span className="text-white text-lg">✓</span>
-        <span className="text-lg">Salvar Alterações</span>
+        <span className="text-lg">
+          {apenasFotoAlterada ? 'Salvar Foto' : 'Salvar Alterações'}
+        </span>
         </button>
       )}
         <button

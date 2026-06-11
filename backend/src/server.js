@@ -62,6 +62,7 @@ const serializeUser = (user) => ({
   username: user.username,
   email: user.email,
   bio: user.bio || '',
+  avatar: user.avatar || null,
 })
 
 const serializePost = (post) => ({
@@ -348,7 +349,7 @@ app.post('/api/auth/register', async (req, res) => {
   }
 })
 //atualizar perfil de usuario logado
-app.put('/api/users/me', verifyToken, async (req, res) => {
+app.put('/api/users/me', verifyToken, upload.single('avatar'), async (req, res) => {
   const { username, bio } = req.body
 
   if (!username || !username.trim()) {
@@ -370,6 +371,7 @@ app.put('/api/users/me', verifyToken, async (req, res) => {
     }
 
     const oldUser = await usersCollection.findOne({ _id: userId })
+    const avatar = req.file ? `/uploads/${req.file.filename}` : oldUser.avatar || null
 
     await usersCollection.updateOne(
       { _id: userId },
@@ -377,6 +379,7 @@ app.put('/api/users/me', verifyToken, async (req, res) => {
         $set: {
           username: usernameLimpo,
           bio: bioLimpa,
+          avatar,
           updatedAt: new Date(),
         },
       },

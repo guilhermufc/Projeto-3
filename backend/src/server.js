@@ -441,6 +441,7 @@ app.get('/api/users/search', verifyToken, async (req, res) => {
         id: u._id.toString(),
         username: u.username,
         email: u.email,
+        avatar: u.avatar || null,
       })),
     )
   } catch (error) {

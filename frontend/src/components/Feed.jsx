@@ -126,8 +126,19 @@ export default function Feed() {
             </div>
           </div>
         </div>
-        <div className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200 transition-colors" onClick={() => navigate('/profile')}>
-          <span className="fi fi-br-circle-user text-[22px] opacity-80" aria-hidden="true" />
+        <div
+          className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200 transition-colors overflow-hidden"
+          onClick={() => navigate('/profile')}
+        >
+          {user?.avatar ? (
+            <img
+              src={resolveImageUrl(user.avatar)}
+              alt={user.username}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <span className="fi fi-br-circle-user text-[22px] opacity-80" aria-hidden="true" />
+          )}
         </div>
       </header>
       {/* END: Top Navigation */}

@@ -292,7 +292,15 @@ export default function Search() {
                       onClick={() => navigate(`/profile/${post.author}`)}
                     >
                       <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
-                        <span className="fi fi-br-circle-user text-[22px] opacity-40" aria-hidden="true" />
+                        {post.authorAvatar ? (
+                          <img
+                            src={resolveImageUrl(post.authorAvatar)}
+                            alt={post.author}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="fi fi-br-circle-user text-[22px] opacity-40" aria-hidden="true" />
+                        )}
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">{post.author}</p>
@@ -406,7 +414,15 @@ export default function Search() {
                   >
                     <div className="flex items-center gap-4">
                       <div className={`w-14 h-14 rounded-full flex items-center justify-center overflow-hidden ${avatar.bg}`}>
-                        <span className={`fi fi-br-circle-user text-[28px] ${avatar.text}`} aria-hidden="true" />
+                        {user.avatar ? (
+                          <img
+                            src={resolveImageUrl(user.avatar)}
+                            alt={user.username}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className={`fi fi-br-circle-user text-[28px] ${avatar.text}`} aria-hidden="true" />
+                        )}
                       </div>
                       <div className="flex flex-col">
                         <span className="text-[17px] leading-6 font-bold text-on-surface">{user.username}</span>

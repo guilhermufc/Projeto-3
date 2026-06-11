@@ -3,6 +3,7 @@ import Login from './components/Login'
 import Feed from './components/Feed'
 import Post from './components/Post'
 import Register from './components/Register'
+import Profile from "./components/Profile";
 import './App.css'
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/feed" element={<Feed />} />
         <Route path="/post" element={<Post />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>

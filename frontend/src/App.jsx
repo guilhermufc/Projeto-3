@@ -3,6 +3,8 @@ import Login from './components/Login'
 import Feed from './components/Feed'
 import Post from './components/Post'
 import Register from './components/Register'
+import Search from './components/Search'
+import OtherProfile from './components/OtherProfile'
 import './App.css'
 
 function App() {
@@ -13,6 +15,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/feed" element={<Feed />} />
         <Route path="/post" element={<Post />} />
+        <Route path="/search" element={<Search />} />
+        <Route path="/profile/:username" element={<OtherProfile />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>

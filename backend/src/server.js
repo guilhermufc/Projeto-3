@@ -61,6 +61,7 @@ const serializeUser = (user) => ({
   id: user._id.toString(),
   username: user.username,
   email: user.email,
+  bio: user.bio || '',
 })
 
 const serializePost = (post) => ({
@@ -81,12 +82,71 @@ const resetDatabaseWithDefaultAdmin = async () => {
     username: 'admin',
     email: 'admin@educonnect.local',
     password: bcrypt.hashSync('admin', 8),
+    bio: 'Amo ensinar pessoas.',
+    createdAt: new Date(),
+  }
+
+  const userMaria = {
+    username: 'mariasilva',
+    email: 'maria@educonnect.local',
+    password: bcrypt.hashSync('maria123', 8),
+    bio: 'Professora de Língua Portuguesa apaixonada por leitura e escrita.',
+    createdAt: new Date(),
+  }
+
+  const userJoao = {
+    username: 'joaosouza',
+    email: 'joao@educonnect.local',
+    password: bcrypt.hashSync('joao123', 8),
+    bio: 'Estudante de engenharia e entusiasta de tecnologia.',
     createdAt: new Date(),
   }
 
   await postsCollection.deleteMany({})
   await usersCollection.deleteMany({})
-  await usersCollection.insertOne(defaultAdmin)
+
+  const usersResult = await usersCollection.insertMany([defaultAdmin, userMaria, userJoao])
+  const adminId = usersResult.insertedIds[0]
+  const mariaId = usersResult.insertedIds[1]
+  const joaoId = usersResult.insertedIds[2]
+
+  const seedPosts = [
+    {
+      userId: mariaId,
+      author: 'mariasilva',
+      title: 'Dicas de Leitura Crítica',
+      categories: ['Leitura', 'Dica'],
+      content: 'A leitura crítica vai além de simplesmente absorver o conteúdo. Tente se perguntar quais são as intenções do autor e como ele constrói seus argumentos.',
+      image: null,
+      attachments: [],
+      savedBy: [],
+      createdAt: new Date(Date.now() - 3600000 * 2), // 2 hours ago
+    },
+    {
+      userId: joaoId,
+      author: 'joaosouza',
+      title: 'Tutorial de Introdução ao React',
+      categories: ['Tutorial', 'Métodos'],
+      content: 'Hoje montei um guia passo a passo de como criar seu primeiro app com React. Deixem suas dúvidas nos comentários.',
+      image: null,
+      attachments: [],
+      savedBy: [],
+      createdAt: new Date(Date.now() - 3600000 * 5), // 5 hours ago
+    },
+    {
+      userId: adminId,
+      author: 'admin',
+      title: 'Bem-vindo ao EduConnect',
+      categories: ['Anúncio'],
+      content: 'Olá a todos! Este é o ambiente de testes do EduConnect. Sinta-se livre para explorar, criar posts e testar a busca.',
+      image: null,
+      attachments: [],
+      savedBy: [],
+      createdAt: new Date(Date.now() - 3600000 * 10), // 10 hours ago
+    }
+  ]
+
+  await postsCollection.insertMany(seedPosts)
 }
 
 const connectDatabase = async () => {
@@ -151,12 +211,16 @@ app.post('/api/auth/login', async (req, res) => {
   }
 })
 
-app.get('/api/posts', verifyToken, async (_req, res) => {
+app.get('/api/posts', verifyToken, async (req, res) => {
   try {
-    const posts = await postsCollection.find({}).sort({ createdAt: -1 }).toArray()
+    const { category, author } = req.query
+    const filter = {}
+    if (category) filter.categories = category
+    if (author) filter.author = author
+    const posts = await postsCollection.find(filter).sort({ createdAt: -1 }).toArray()
     res.json(posts.map((post) => ({
       ...serializePost(post),
-      is_saved: (post.savedBy || []).includes(_req.userId),
+      is_saved: (post.savedBy || []).includes(req.userId),
     })))
   } catch (error) {
     res.status(500).json({ message: 'Erro ao buscar posts' })
@@ -257,7 +321,7 @@ app.post('/api/posts', verifyToken, upload.single('image'), async (req, res) => 
 })
 
 app.post('/api/auth/register', async (req, res) => {
-  const { username, email, password } = req.body
+  const { username, email, password, bio } = req.body
 
   if (!username || !email || !password) {
     return res.status(400).json({ message: 'Todos os campos são obrigatórios' })
@@ -270,6 +334,7 @@ app.post('/api/auth/register', async (req, res) => {
       username,
       email,
       password: hashedPassword,
+      bio: bio || 'Olá! Estou usando o EduConnect.',
       createdAt: new Date(),
     })
 
@@ -280,6 +345,50 @@ app.post('/api/auth/register', async (req, res) => {
     }
 
     res.status(500).json({ message: 'Erro ao registrar usuário' })
+  }
+})
+
+// Search users by username (partial, case-insensitive)
+app.get('/api/users/search', verifyToken, async (req, res) => {
+  const { q } = req.query
+
+  if (!q || q.trim().length === 0) {
+    return res.json([])
+  }
+
+  try {
+    const regex = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')
+    const users = await usersCollection
+      .find({ username: { $regex: regex } })
+      .project({ password: 0 })
+      .limit(20)
+      .toArray()
+
+    res.json(
+      users.map((u) => ({
+        id: u._id.toString(),
+        username: u.username,
+        email: u.email,
+      })),
+    )
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao buscar usuários' })
+  }
+})
+
+// Get user profile by username
+app.get('/api/users/:username', verifyToken, async (req, res) => {
+  try {
+    const { username } = req.params
+    const user = await usersCollection.findOne({ username })
+
+    if (!user) {
+      return res.status(404).json({ message: 'Usuário não encontrado' })
+    }
+
+    res.json(serializeUser(user))
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao buscar perfil' })
   }
 })
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 const categoryStyles = {
@@ -25,48 +25,46 @@ const categoryStyles = {
   Desafio:     'bg-[#FF4500] text-white',
 }
 
-export default function Feed() {
+export default function OtherProfile() {
+  const { username } = useParams()
+  const navigate = useNavigate()
+  const [profileUser, setProfileUser] = useState(null)
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState(null)
-  const navigate = useNavigate()
-  const resolveImageUrl = (imagePath) => {
-    if (!imagePath) {
-      return ''
-    }
 
+  const resolveImageUrl = (imagePath) => {
+    if (!imagePath) return ''
     if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
       return imagePath
     }
-
     return `http://localhost:3000${imagePath}`
   }
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user')
     const token = localStorage.getItem('token')
-
     if (!token) {
       navigate('/login')
       return
     }
 
-    if (storedUser) {
-      setUser(JSON.parse(storedUser))
-    }
+    fetchProfileAndPosts()
+  }, [username, navigate])
 
-    fetchPosts()
-  }, [navigate])
-
-  const fetchPosts = async () => {
+  const fetchProfileAndPosts = async () => {
     try {
       const token = localStorage.getItem('token')
-      const response = await axios.get('http://localhost:3000/api/posts', {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      setPosts(response.data || [])
+      const headers = { Authorization: `Bearer ${token}` }
+
+      // Buscamos simultaneamente o perfil e os posts daquele usuário
+      const [userRes, postsRes] = await Promise.all([
+        axios.get(`http://localhost:3000/api/users/${username}`, { headers }),
+        axios.get(`http://localhost:3000/api/posts?author=${username}`, { headers }),
+      ])
+
+      setProfileUser(userRes.data)
+      setPosts(postsRes.data || [])
     } catch (error) {
-      console.error('Erro ao buscar posts:', error)
+      console.error('Erro ao buscar perfil:', error)
       if (error.response?.status === 401) {
         localStorage.removeItem('token')
         localStorage.removeItem('user')
@@ -97,51 +95,76 @@ export default function Feed() {
       }
     } catch (error) {
       console.error('Erro ao salvar post:', error)
-      if (error.response?.status === 401) {
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
-        navigate('/login')
-      }
     }
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-    navigate('/login')
+  if (loading) {
+    return (
+      <div className="font-sans text-gray-900 bg-[#F8FAFC] min-h-screen flex items-center justify-center">
+        <p className="text-slate-500 font-medium">Carregando perfil...</p>
+      </div>
+    )
   }
 
-  const handleCreatePost = () => {
-    navigate('/post')
+  if (!profileUser) {
+    return (
+      <div className="font-sans text-gray-900 bg-[#F8FAFC] min-h-screen flex flex-col items-center justify-center p-6">
+        <p className="text-slate-500 font-medium text-lg mb-4">Usuário não encontrado.</p>
+        <button
+          onClick={() => navigate(-1)}
+          className="px-6 py-2 bg-gray-200 rounded-full font-bold text-gray-700"
+        >
+          Voltar
+        </button>
+      </div>
+    )
   }
 
   return (
-    <div className="font-sans text-gray-900 pb-32 min-h-screen">
-      {/* BEGIN: Top Navigation */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md px-6 py-4 flex justify-between items-center">
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <div className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full">
-              <span className="fi fi-br-bell-ring text-[22px] opacity-80" aria-hidden="true" />
+    <div className="font-sans text-gray-900 bg-[#F8FAFC] min-h-screen flex flex-col">
+      {/* BEGIN: MainHeader */}
+      <header className="p-4 pt-6 sticky top-0 z-20 bg-[#F8FAFC]">
+        <div className="flex items-start justify-between">
+          <div className="flex items-center space-x-3 bg-white rounded-2xl px-4 py-3 card-shadow w-[calc(100%-60px)]">
+            <div className="w-16 h-16 rounded-full flex items-center justify-center shadow-sm bg-[#ABF1A9]">
+              <span className="fi fi-br-circle-user text-[36px] text-white opacity-80" aria-hidden="true" />
+            </div>
+            <div>
+              <h1 className="font-bold leading-tight text-[25px] text-slate-900">{profileUser.username}</h1>
+              <p className="text-slate-500 font-medium text-[15px]">
+                {posts.length} {posts.length === 1 ? 'Publicação' : 'Publicações'}
+              </p>
             </div>
           </div>
-        </div>
-        <div className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200 transition-colors" onClick={handleLogout}>
-          <span className="fi fi-br-circle-user text-[22px] opacity-80" aria-hidden="true" />
+          <button
+            onClick={() => navigate(-1)}
+            aria-label="Fechar"
+            className="mt-2 w-11 h-11 rounded-full hover:bg-slate-200 transition-colors flex items-center justify-center bg-white text-[#8B8B8B] card-shadow"
+          >
+            <span className="fi fi-br-cross text-[20px]" aria-hidden="true" />
+          </button>
         </div>
       </header>
-      {/* END: Top Navigation */}
+      
+      {/* Bio Section */}
+      {profileUser.bio && (
+        <div className="flex px-4 mb-4 justify-start">
+          <div className="bg-white rounded-2xl card-shadow flex items-center justify-center px-4 py-2 w-[calc(100%-60px)] min-h-[37px]">
+            <span className="font-medium text-[20px] text-black text-center break-words">{profileUser.bio}</span>
+          </div>
+        </div>
+      )}
+      {/* END: MainHeader */}
 
-      <main className="px-6 space-y-6 pt-4">
-        {/* BEGIN: Feed List */}
-        <div className="space-y-4 pb-12">
-          {loading ? (
+      {/* BEGIN: MainContent */}
+      <main className="flex-grow p-4 pb-32">
+        <h2 className="text-2xl font-bold mb-4 px-2">Publicações</h2>
+
+        {/* BEGIN: Feed */}
+        <section className="space-y-6">
+          {posts.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-500">Carregando posts...</p>
-            </div>
-          ) : posts.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-500">Nenhum post encontrado. Seja o primeiro a compartilhar!</p>
+              <p className="text-gray-500 font-medium">Nenhum post publicado ainda.</p>
             </div>
           ) : (
             posts.map((post) => (
@@ -160,30 +183,30 @@ export default function Feed() {
                   </div>
                 )}
 
-                <div className="flex items-start mb-5">
-                  <div 
+                 <div className="flex items-start mb-5">
+                  <div
                     className="flex items-center gap-4 cursor-pointer"
                     onClick={() => navigate(`/profile/${post.author}`)}
                   >
-                    <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center overflow-hidden">
-                      <span className="fi fi-br-circle-user text-[28px] opacity-40" aria-hidden="true" />
+                    <div className="w-14 h-14 bg-[#ABF1A9] rounded-full flex items-center justify-center overflow-hidden">
+                      <span className="fi fi-br-circle-user text-[28px] text-white opacity-80" aria-hidden="true" />
                     </div>
                     <div className="pr-2">
-                      <h3 className="text-lg font-medium text-gray-500 hover:text-gray-900 transition-colors">{post.author}</h3>
-                      {post.title && <p className="text-2xl font-extrabold leading-tight text-on-surface">{post.title}</p>}
+                      <h3 className="text-[20px] font-bold text-gray-900 hover:text-gray-700 transition-colors">{post.author}</h3>
+                      {post.title && <p className="text-[15px] font-bold leading-tight text-gray-600 mt-1">{post.title}</p>}
                     </div>
                   </div>
                 </div>
 
-                <div className="mb-8">
-                  <p className="text-[17px] leading-relaxed text-on-surface">
+                <div className="mb-6">
+                  <p className="text-[18px] font-medium leading-snug text-gray-800">
                     {post.content}
                   </p>
 
-                  {/* Image preview inside text container, below all text */}
+                  {/* Image preview */}
                   {post.image && (
-                    <div className="rounded-[28px] overflow-hidden bg-gray-100 mt-4">
-                      <img alt="Post" className="w-full h-auto object-contain" src={resolveImageUrl(post.image)} />
+                    <div className="rounded-[28px] overflow-hidden bg-slate-100 mt-4 aspect-[4/3]">
+                      <img alt="Post" className="w-full h-full object-cover" src={resolveImageUrl(post.image)} />
                     </div>
                   )}
                 </div>
@@ -201,31 +224,35 @@ export default function Feed() {
                         <img
                           src="/icons/bookmark_prenchido.png"
                           alt="Salvo"
-                          className="w-5 h-5"
+                          className="w-6 h-6"
                           style={{ filter: 'brightness(0) saturate(100%) invert(73%) sepia(35%) saturate(1637%) hue-rotate(345deg) brightness(103%) contrast(101%)' }}
                         />
                       ) : (
-                        <span className="fi fi-br-bookmark text-[20px] text-gray-400 opacity-60" aria-hidden="true" />
+                        <span className="fi fi-br-bookmark text-[24px] text-gray-400 opacity-60" aria-hidden="true" />
                       )}
-                    <span className="text-sm text-gray-600">{post.saved_count || 0}</span>
+                    <span className="text-sm font-bold text-gray-400">{post.saved_count || 0}</span>
                   </button>
                 </div>
               </article>
             ))
           )}
-        </div>
-        {/* END: Feed List */}
+        </section>
+        {/* END: Feed */}
       </main>
+      {/* END: MainContent */}
 
       {/* BEGIN: Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white px-8 py-4 flex justify-between items-center z-50 rounded-t-[32px] border-t border-gray-100">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white px-8 py-4 flex justify-between items-center z-50 rounded-t-[32px] border-t border-gray-100 nav-shadow">
         <div
           onClick={() => navigate('/search')}
           className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200 transition-colors"
         >
           <span className="fi fi-br-search text-[22px] opacity-60" aria-hidden="true" />
         </div>
-        <div className="w-16 h-16 bg-black flex items-center justify-center text-white shadow-lg rounded-full cursor-pointer hover:bg-gray-900 transition-colors">
+        <div 
+          onClick={() => navigate('/feed')}
+          className="w-16 h-16 bg-black flex items-center justify-center text-white shadow-lg rounded-full cursor-pointer hover:bg-gray-900 transition-colors"
+        >
           <span className="fi fi-br-home text-[22px] opacity-80" aria-hidden="true" />
         </div>
         <div className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200 transition-colors">
@@ -233,14 +260,6 @@ export default function Feed() {
         </div>
       </nav>
       {/* END: Bottom Navigation */}
-
-      {/* Floating Action Button */}
-      <button
-        onClick={handleCreatePost}
-        className="fixed bottom-32 right-8 bg-[#ff9947] text-white w-20 h-20 rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 active:scale-95 z-40"
-      >
-        <span className="fi fi-br-plus text-[34px]" aria-hidden="true" />
-      </button>
     </div>
   )
 }

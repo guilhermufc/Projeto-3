@@ -219,10 +219,20 @@ app.get('/api/posts', verifyToken, async (req, res) => {
     if (category) filter.categories = category
     if (author) filter.author = author
     const posts = await postsCollection.find(filter).sort({ createdAt: -1 }).toArray()
-    res.json(posts.map((post) => ({
-      ...serializePost(post),
-      is_saved: (post.savedBy || []).includes(req.userId),
-    })))
+    
+    const postsWithAuthor = await Promise.all(
+      posts.map(async (post) => {
+        const authorUser = await usersCollection.findOne({ _id: post.userId })
+
+        return {
+          ...serializePost(post),
+          authorAvatar: authorUser?.avatar || null,
+          is_saved: (post.savedBy || []).includes(req.userId),
+        }
+      }),
+    )
+
+    res.json(postsWithAuthor)
   } catch (error) {
     res.status(500).json({ message: 'Erro ao buscar posts' })
   }

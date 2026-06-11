@@ -166,7 +166,15 @@ export default function Feed() {
                     onClick={() => navigate(`/profile/${post.author}`)}
                   >
                     <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center overflow-hidden">
-                      <span className="fi fi-br-circle-user text-[28px] opacity-40" aria-hidden="true" />
+                      {post.authorAvatar ? (
+                        <img
+                          src={resolveImageUrl(post.authorAvatar)}
+                          alt={post.author}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="fi fi-br-circle-user text-[28px] opacity-40" aria-hidden="true" />
+                      )}
                     </div>
                     <div className="pr-2">
                       <h3 className="text-lg font-medium text-gray-500 hover:text-gray-900 transition-colors">{post.author}</h3>

@@ -126,10 +126,18 @@ export default function OtherProfile() {
       <header className="p-4 pt-6 sticky top-0 z-20 bg-[#F8FAFC]">
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-3 bg-white rounded-2xl px-4 py-3 card-shadow w-[calc(100%-60px)]">
-            <div className="w-16 h-16 rounded-full flex items-center justify-center shadow-sm bg-[#ABF1A9]">
-              <span className="fi fi-br-circle-user text-[36px] text-white opacity-80" aria-hidden="true" />
+            <div className="w-16 h-16 rounded-full flex items-center justify-center shadow-sm bg-[#ABF1A9] overflow-hidden">
+              {profileUser.avatar ? (
+                <img
+                  src={resolveImageUrl(profileUser.avatar)}
+                  alt={profileUser.username}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="fi fi-br-circle-user text-[36px] text-white opacity-80" aria-hidden="true" />
+              )}
             </div>
-            <div>
+          <div>
               <h1 className="font-bold leading-tight text-[25px] text-slate-900">{profileUser.username}</h1>
               <p className="text-slate-500 font-medium text-[15px]">
                 {posts.length} {posts.length === 1 ? 'Publicação' : 'Publicações'}
@@ -189,7 +197,15 @@ export default function OtherProfile() {
                     onClick={() => navigate(`/profile/${post.author}`)}
                   >
                     <div className="w-14 h-14 bg-[#ABF1A9] rounded-full flex items-center justify-center overflow-hidden">
-                      <span className="fi fi-br-circle-user text-[28px] text-white opacity-80" aria-hidden="true" />
+                      {post.authorAvatar ? (
+                        <img
+                          src={resolveImageUrl(post.authorAvatar)}
+                          alt={post.author}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="fi fi-br-circle-user text-[28px] text-white opacity-80" aria-hidden="true" />
+                      )}
                     </div>
                     <div className="pr-2">
                       <h3 className="text-[20px] font-bold text-gray-900 hover:text-gray-700 transition-colors">{post.author}</h3>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
 export default function Profile() {
   const navigate = useNavigate()
@@ -29,22 +30,32 @@ const houveAlteracao =
   localStorage.removeItem('user')
   navigate('/login')
 }
-  function salvarAlteracoes() {
-    const user = JSON.parse(localStorage.getItem('user'))
+async function salvarAlteracoes() {
+  try {
+    const token = localStorage.getItem('token')
 
-    const usuarioAtualizado = {
-      ...user,
-      username: nome,
-      bio: bio
-    }
+    const response = await axios.put(
+      'http://localhost:3000/api/users/me',
+      {
+        username: nome,
+        bio: bio,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    )
 
-    localStorage.setItem('user', JSON.stringify(usuarioAtualizado))
+    localStorage.setItem('user', JSON.stringify(response.data.user))
+    localStorage.setItem('token', response.data.token)
 
-    setNomeSalvo(nome)
-    setBioSalva(bio)
+    setNomeSalvo(response.data.user.username)
+    setBioSalva(response.data.user.bio)
 
     alert('Alterações salvas com sucesso!')
+  } catch (error) {
+    alert(error.response?.data?.message || 'Erro ao salvar alterações')
   }
+}
   return (
     <main className="min-h-screen font-sans p-4 bg-[#F4F4F4] flex justify-center pt-8">
       <div className="relative w-full max-w-md bg-[#F4F4F4] p-6 rounded-3xl flex flex-col items-center gap-9">

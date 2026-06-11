@@ -347,6 +347,65 @@ app.post('/api/auth/register', async (req, res) => {
     res.status(500).json({ message: 'Erro ao registrar usuário' })
   }
 })
+//atualizar perfil de usuario logado
+app.put('/api/users/me', verifyToken, async (req, res) => {
+  const { username, bio } = req.body
+
+  if (!username || !username.trim()) {
+    return res.status(400).json({ message: 'Nome de usuário é obrigatório' })
+  }
+
+  try {
+    const userId = new ObjectId(req.userId)
+    const usernameLimpo = username.trim()
+    const bioLimpa = bio?.trim() || ''
+
+    const existingUser = await usersCollection.findOne({
+      username: usernameLimpo,
+      _id: { $ne: userId },
+    })
+
+    if (existingUser) {
+      return res.status(400).json({ message: 'Nome de usuário já está em uso' })
+    }
+
+    const oldUser = await usersCollection.findOne({ _id: userId })
+
+    await usersCollection.updateOne(
+      { _id: userId },
+      {
+        $set: {
+          username: usernameLimpo,
+          bio: bioLimpa,
+          updatedAt: new Date(),
+        },
+      },
+    )
+
+    if (oldUser.username !== usernameLimpo) {
+      await postsCollection.updateMany(
+        { userId },
+        { $set: { author: usernameLimpo } },
+      )
+    }
+
+    const updatedUser = await usersCollection.findOne({ _id: userId })
+
+    const token = jwt.sign(
+      { id: updatedUser._id.toString(), username: updatedUser.username },
+      JWT_SECRET,
+      { expiresIn: '24h' },
+    )
+
+    res.json({
+      message: 'Perfil atualizado com sucesso',
+      user: serializeUser(updatedUser),
+      token,
+    })
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao atualizar perfil' })
+  }
+})
 
 // Search users by username (partial, case-insensitive)
 app.get('/api/users/search', verifyToken, async (req, res) => {

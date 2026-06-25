@@ -6,6 +6,7 @@ import Register from './components/Register'
 import Profile from "./components/Profile";
 import Search from './components/Search'
 import OtherProfile from './components/OtherProfile'
+import Salvos from './components/Salvos'
 import './App.css'
 import Calendar from './components/Calendar'
 
@@ -21,6 +22,7 @@ function App() {
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/profile/:username" element={<OtherProfile />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/salvos" element={<Salvos />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>

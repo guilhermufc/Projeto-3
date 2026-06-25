@@ -31,6 +31,7 @@ let mongoClient
 let mongoMemoryServer
 let usersCollection
 let postsCollection
+let schedulesCollection
 
 app.use(express.json())
 app.use(
@@ -166,10 +167,12 @@ const connectDatabase = async () => {
   const database = mongoClient.db(databaseName)
   usersCollection = database.collection('users')
   postsCollection = database.collection('posts')
+  schedulesCollection = database.collection('schedules')
 
   await usersCollection.createIndex({ username: 1 }, { unique: true })
   await usersCollection.createIndex({ email: 1 }, { unique: true })
   await postsCollection.createIndex({ createdAt: -1 })
+  await schedulesCollection.createIndex({ userId: 1, date: 1 })
 
   await resetDatabaseWithDefaultAdmin()
 }

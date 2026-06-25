@@ -9,9 +9,11 @@ export default function Profile() {
   const [fotoAlterada, setFotoAlterada] = useState(false)
   const [nome, setNome] = useState(user?.username || 'Usuário')
   const [bio, setBio] = useState(user?.bio || '')
+  
   const [foto, setFoto] = useState(
      user?.avatar ? `http://localhost:3000${user.avatar}` : null
   )
+  
   const [nomeSalvo, setNomeSalvo] = useState(user?.username || 'Usuário')
   const [bioSalva, setBioSalva] = useState(user?.bio || '')
   const [fotoArquivo, setFotoArquivo] = useState(null)
@@ -48,7 +50,7 @@ export default function Profile() {
 
       const formData = new FormData()
 
-      formData.append('username', nome)
+      formData.append('username', nome) 
       formData.append('bio', bio)
 
       if (fotoArquivo) {
@@ -160,7 +162,7 @@ export default function Profile() {
         <button onClick={salvarAlteracoes}
          className="w-3/4 bg-green-500 hover:bg-green-600 text-white font-semibold py-5 px-6 rounded-xl flex items-center justify-center gap-3 shadow-xs border border-green-500 transition-all active:scale-98 cursor-pointer"
         >
-        <span className="text-white text-lg">✓</span>
+        <span class="text-white text-lg">✓</span>
         <span className="text-lg">
           {apenasFotoAlterada ? 'Salvar Foto' : 'Salvar Alterações'}
         </span>

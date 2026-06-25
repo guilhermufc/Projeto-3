@@ -7,6 +7,7 @@ import Profile from "./components/Profile";
 import Search from './components/Search'
 import OtherProfile from './components/OtherProfile'
 import './App.css'
+import Calendar from './components/Calendar'
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/feed" element={<Feed />} />
         <Route path="/post" element={<Post />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/calendar" element={<Calendar />} />
         <Route path="/profile/:username" element={<OtherProfile />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/" element={<Navigate to="/login" replace />} />

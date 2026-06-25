@@ -247,7 +247,9 @@ export default function Feed() {
         <div className="w-16 h-16 bg-black flex items-center justify-center text-white shadow-lg rounded-full cursor-pointer hover:bg-gray-900 transition-colors">
           <span className="fi fi-br-home text-[22px] opacity-80" aria-hidden="true" />
         </div>
-        <div className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200 transition-colors">
+        <div 
+          onClick={() => navigate('/calendar')}
+          className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200 transition-colors">
           <span className="fi fi-br-calendar text-[22px] opacity-60" aria-hidden="true" />
         </div>
       </nav>

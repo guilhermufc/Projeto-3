@@ -238,6 +238,34 @@ app.get('/api/posts', verifyToken, async (req, res) => {
   }
 })
 
+app.get('/api/posts/saved', verifyToken, async (req, res) => {
+  try {
+    const userId = req.userId
+
+    // Busca posts onde o userId do usuário logado está presente no array 'savedBy'
+    const posts = await postsCollection
+      .find({ savedBy: userId })
+      .sort({ createdAt: -1 })
+      .toArray()
+
+    const postsWithAuthor = await Promise.all(
+      posts.map(async (post) => {
+        const authorUser = await usersCollection.findOne({ _id: post.userId })
+
+        return {
+          ...serializePost(post),
+          authorAvatar: authorUser?.avatar || null,
+          is_saved: true,
+        }
+      }),
+    )
+
+    res.json(postsWithAuthor)
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao buscar posts salvos' })
+  }
+})
+
 app.post('/api/posts/:postId/save', verifyToken, async (req, res) => {
   try {
     const { postId } = req.params

@@ -49,6 +49,7 @@ export default function Search() {
   const [userResults, setUserResults] = useState([])
   const [history, setHistory] = useState([])
   const [userLoading, setUserLoading] = useState(false)
+  const [user, setUser] = useState(null)
 
   const [activeCategory, setActiveCategory] = useState(null)
   const [categoryPosts, setCategoryPosts] = useState([])
@@ -64,6 +65,10 @@ export default function Search() {
     if (!token) {
       navigate('/login')
       return
+    }
+    const storedUser = localStorage.getItem('user')
+    if (storedUser) {
+      setUser(JSON.parse(storedUser))
     }
     const savedHistory = localStorage.getItem('searchHistory')
     if (savedHistory) setHistory(JSON.parse(savedHistory))
@@ -188,8 +193,34 @@ export default function Search() {
 
   return (
     <div className="font-sans text-gray-900 pb-32 min-h-screen">
-      {/* Top App Bar – Search */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md px-6 py-4">
+      {/* Top App Bar – Search & Navigation */}
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md px-6 py-4 space-y-4">
+        {/* Top Navigation Row */}
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full">
+                <span className="fi fi-br-bell-ring text-[22px] opacity-80" aria-hidden="true" />
+              </div>
+            </div>
+          </div>
+          <div
+            className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200 transition-colors overflow-hidden"
+            onClick={() => navigate('/profile')}
+          >
+            {user?.avatar ? (
+              <img
+                src={resolveImageUrl(user.avatar)}
+                alt={user.username}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="fi fi-br-circle-user text-[22px] opacity-80" aria-hidden="true" />
+            )}
+          </div>
+        </div>
+
+        {/* Search Bar Row */}
         <div
           className={`flex items-center gap-3 bg-white rounded-full border px-5 py-3.5 card-shadow transition-all duration-200 ${
             isFocused ? 'border-gray-400 ring-2 ring-gray-200' : 'border-gray-100'

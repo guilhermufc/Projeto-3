@@ -85,12 +85,12 @@ export default function Profile() {
     }
   }
   return (
-    <div className="font-sans text-gray-900 pb-32 min-h-screen bg-[#F4F4F4]">
-      <main className="p-4 flex justify-center pt-8 bg-[#F4F4F4]">
-        <div className="relative w-full max-w-md bg-[#F4F4F4] p-6 rounded-3xl flex flex-col items-center gap-9">
+    <div className="font-sans text-gray-900 pb-32 min-h-screen bg-[#F4F4F4] md:bg-transparent">
+      <main className="p-4 md:p-8 flex justify-center items-start pt-8 md:pt-16 bg-[#F4F4F4] md:bg-transparent">
+        <div className="relative w-full max-w-md bg-[#F4F4F4] md:bg-white md:card-shadow md:border md:border-gray-100 p-6 md:p-8 rounded-3xl flex flex-col items-center gap-9">
           <button
             onClick={() => navigate('/feed')}
-            className="absolute top-6 left-6 cursor-pointer"
+            className="absolute top-6 left-6 cursor-pointer md:hidden"
           >
             <span
               className="material-symbols-outlined text-[28px] text-[#333333]"
@@ -172,7 +172,7 @@ export default function Profile() {
         )}
           <button
             onClick={sair}
-            className="mt-2 w-32 bg-[#FF80DF] hover:bg-[#ff66d6] text-white font-medium py-2 rounded-full shadow-md transition-all active:scale-95 cursor-pointer text-center"
+            className="md:hidden mt-2 w-32 bg-[#FF80DF] hover:bg-[#ff66d6] text-white font-medium py-2 rounded-full shadow-md transition-all active:scale-95 cursor-pointer text-center"
           >
             Sair
           </button>
@@ -180,7 +180,7 @@ export default function Profile() {
       </main>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white px-8 py-4 flex justify-between items-center z-50 rounded-t-[32px] border-t border-gray-100 nav-shadow">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white px-8 py-4 flex justify-between items-center z-50 rounded-t-[32px] border-t border-gray-100 nav-shadow md:hidden">
         <div
           onClick={() => navigate('/search')}
           className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200 transition-colors"

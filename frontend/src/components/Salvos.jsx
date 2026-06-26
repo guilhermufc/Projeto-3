@@ -92,9 +92,9 @@ export default function Salvos() {
   }
 
   return (
-    <div className="font-sans text-gray-900 pb-32 min-h-screen bg-[#F4F4F4]">
+    <div className="font-sans text-gray-900 pb-32 min-h-screen bg-[#F4F4F4] md:bg-transparent">
       {/* Top Header */}
-      <header className="sticky top-0 z-50 bg-[#F4F4F4]/80 backdrop-blur-md px-6 py-5 flex items-center relative">
+      <header className="sticky top-0 z-50 bg-[#F4F4F4]/80 md:bg-transparent backdrop-blur-md md:backdrop-blur-none px-6 py-5 flex items-center relative">
         <button
           onClick={() => navigate('/profile')}
           className="absolute left-6 cursor-pointer flex items-center justify-center w-10 h-10 bg-white rounded-full shadow-sm hover:bg-gray-50 transition-colors"

@@ -118,7 +118,7 @@ export default function Feed() {
   return (
     <div className="font-sans text-gray-900 pb-32 min-h-screen">
       {/* BEGIN: Top Navigation */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md px-6 py-4 flex justify-between items-center">
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md px-6 py-4 flex justify-between items-center md:hidden">
         <div className="flex items-center gap-4">
           <div className="relative">
             <div className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full">
@@ -237,7 +237,7 @@ export default function Feed() {
       </main>
 
       {/* BEGIN: Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white px-8 py-4 flex justify-between items-center z-50 rounded-t-[32px] border-t border-gray-100">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white px-8 py-4 flex justify-between items-center z-50 rounded-t-[32px] border-t border-gray-100 md:hidden">
         <div
           onClick={() => navigate('/search')}
           className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200 transition-colors"
@@ -247,7 +247,10 @@ export default function Feed() {
         <div className="w-16 h-16 bg-black flex items-center justify-center text-white shadow-lg rounded-full cursor-pointer hover:bg-gray-900 transition-colors">
           <span className="fi fi-br-home text-[22px] opacity-80" aria-hidden="true" />
         </div>
-        <div className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200 transition-colors">
+        <div
+          onClick={() => navigate('/calendar')}
+          className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200 transition-colors"
+        >
           <span className="fi fi-br-calendar text-[22px] opacity-60" aria-hidden="true" />
         </div>
       </nav>
@@ -256,7 +259,7 @@ export default function Feed() {
       {/* Floating Action Button */}
       <button
         onClick={handleCreatePost}
-        className="fixed bottom-32 right-8 bg-[#ff9947] text-white w-20 h-20 rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 active:scale-95 z-40"
+        className="fixed bottom-32 right-8 bg-[#ff9947] text-white w-20 h-20 rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 active:scale-95 z-40 md:hidden"
       >
         <span className="fi fi-br-plus text-[34px]" aria-hidden="true" />
       </button>

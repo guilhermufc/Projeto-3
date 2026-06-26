@@ -7,22 +7,27 @@ import Profile from "./components/Profile";
 import Search from './components/Search'
 import OtherProfile from './components/OtherProfile'
 import Salvos from './components/Salvos'
+import Layout from './components/Layout'
+import Calendar from './components/Calendar'
 import './App.css'
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/feed" element={<Feed />} />
-        <Route path="/post" element={<Post />} />
-        <Route path="/search" element={<Search />} />
-        <Route path="/profile/:username" element={<OtherProfile />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/salvos" element={<Salvos />} />
-        <Route path="/" element={<Navigate to="/login" replace />} />
-      </Routes>
+      <Layout>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/feed" element={<Feed />} />
+          <Route path="/post" element={<Post />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/calendar" element={<Calendar />} />
+          <Route path="/profile/:username" element={<OtherProfile />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/salvos" element={<Salvos />} />
+          <Route path="/" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </Layout>
     </Router>
   )
 }

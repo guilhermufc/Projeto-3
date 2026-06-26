@@ -261,8 +261,8 @@ export default function Calendar() {
 
   return (
     <div className="min-h-screen bg-[#F4F4F4] font-sans p-6 pb-32">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl w-full mx-auto items-start">
-        <div className="md:col-span-2 flex flex-col gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 max-w-5xl w-full mx-auto items-start">
+        <div className="col-span-1 md:col-span-7 flex flex-col gap-6">
           <div className="flex items-center gap-3 w-full">
             <div className="bg-white rounded-2xl px-6 py-4 flex-1 shadow-xs">
               <h1 className="text-2xl font-extrabold text-black tracking-tight">
@@ -272,7 +272,7 @@ export default function Calendar() {
 
             <button
               onClick={() => navigate('/feed')}
-              className="bg-white hover:bg-gray-100 text-gray-400 hover:text-gray-600 w-12 h-12 rounded-full flex items-center justify-center shadow-xs transition-colors cursor-pointer text-lg"
+              className="bg-white hover:bg-gray-100 text-gray-400 hover:text-gray-600 w-12 h-12 rounded-full flex items-center justify-center shadow-xs transition-colors cursor-pointer text-lg md:hidden"
               aria-label="Fechar"
             >
               <span className="fi fi-br-cross text-[18px]" aria-hidden="true" />
@@ -315,7 +315,7 @@ export default function Calendar() {
                   <button
                     key={day.dateKey}
                     onClick={() => selectDay(day)}
-                    className={`h-16 w-full font-medium border-b border-r border-gray-100 transition-colors flex items-center justify-center ${
+                    className={`h-[70px] w-full font-medium border-b border-r border-gray-100 transition-colors flex items-center justify-center ${
                       !day.isCurrentMonth
                         ? 'text-gray-300 bg-gray-50/50'
                         : 'text-gray-800'
@@ -343,7 +343,7 @@ export default function Calendar() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 md:mt-[72px]">
+        <div className="col-span-1 md:col-span-5 flex flex-col gap-4 md:mt-[72px]">
             <div className="bg-[#FBC07F] rounded-2xl p-5 shadow-xs flex flex-col gap-1 text-gray-900">
                 {selectedHoliday ? (
                     <>
@@ -385,31 +385,31 @@ export default function Calendar() {
                     <div
                       key={item.id}
                       className={`rounded-xl p-3 ${
-                        item.done ? 'bg-green-50 text-gray-400 line-through' : 'bg-gray-50'
+                        item.done ? 'bg-green-50' : 'bg-gray-50'
                       }`}
                     >
-                      <p className="text-xs font-bold text-gray-800 leading-relaxed">
+                      <p className={`text-xs font-bold leading-relaxed ${item.done ? 'text-gray-400 line-through' : 'text-gray-800'}`}>
                         {item.description}
                       </p>
 
-                      <div className="flex justify-end gap-2 text-[10px] font-bold mt-3">
+                      <div className="flex flex-wrap justify-end gap-1.5 text-[10px] font-bold mt-3">
                         <button
                           onClick={() => startEditing(item)}
-                          className="bg-gray-100 hover:bg-gray-200 text-gray-400 px-3 py-1.5 rounded-md transition-colors cursor-pointer"
+                          className="bg-gray-100 hover:bg-gray-200 text-gray-400 px-2.5 py-1.5 rounded-md transition-colors cursor-pointer"
                         >
                           Editar
                         </button>
 
                         <button
                           onClick={() => toggleDone(item)}
-                          className="bg-[#A2E9A6] hover:bg-[#8ee093] text-white px-3 py-1.5 rounded-md transition-colors cursor-pointer"
+                          className="bg-[#A2E9A6] hover:bg-[#8ee093] text-white px-2.5 py-1.5 rounded-md transition-colors cursor-pointer"
                         >
                           {item.done ? 'Desfazer' : 'Feito'}
                         </button>
 
                         <button
                           onClick={() => deleteSchedule(item.id)}
-                          className="bg-red-100 hover:bg-red-200 text-red-400 px-3 py-1.5 rounded-md transition-colors cursor-pointer"
+                          className="bg-red-100 hover:bg-red-200 text-red-400 px-2.5 py-1.5 rounded-md transition-colors cursor-pointer"
                         >
                           Apagar
                         </button>
@@ -439,7 +439,7 @@ export default function Calendar() {
         </div>
       </div>
 
-      <nav className="fixed bottom-0 left-0 right-0 bg-white px-8 py-4 flex justify-between items-center z-50 rounded-t-[32px] border-t border-gray-100">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white px-8 py-4 flex justify-between items-center z-50 rounded-t-[32px] border-t border-gray-100 md:hidden">
         <div
           onClick={() => navigate('/search')}
           className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200 transition-colors"

@@ -26,7 +26,7 @@ const categoryStyles = {
   Desafio: 'bg-[#FF4500] text-white',
 }
 
-export default function Post() {
+export default function Post({ isModal = false, onClose = null }) {
   const [title, setTitle] = useState('')
   const [selectedCategories, setSelectedCategories] = useState([])
   const [content, setContent] = useState('')
@@ -116,7 +116,12 @@ export default function Post() {
         },
       })
 
-      navigate('/feed')
+      if (isModal) {
+        onClose?.()
+        window.location.reload()
+      } else {
+        navigate('/feed')
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Erro ao criar post')
     } finally {
@@ -125,7 +130,135 @@ export default function Post() {
   }
 
   const handleClose = () => {
-    navigate('/feed')
+    if (isModal) {
+      onClose?.()
+    } else {
+      navigate('/feed')
+    }
+  }
+
+  if (isModal) {
+    return (
+      <div className="w-full bg-white rounded-3xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto no-scrollbar border border-gray-100 flex flex-col gap-4 max-w-2xl">
+        <header className="w-full flex justify-between items-center h-12 bg-transparent">
+          <span className="text-xl font-bold text-gray-800">Nova Publicação</span>
+          <button
+            type="button"
+            onClick={handleClose}
+            className="p-2 cursor-pointer hover:bg-gray-100 transition-colors rounded-full active:scale-95 duration-200"
+          >
+            <span className="text-gray-500 text-[28px] leading-none" aria-hidden="true">×</span>
+          </button>
+        </header>
+
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+            {error}
+          </div>
+        )}
+
+        <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
+          <div className="bg-surface-container-lowest rounded-2xl p-md main-card-shadow flex flex-col gap-4">
+            <label className="flex flex-col gap-2">
+              <span className="font-headline-md text-headline-md text-on-surface">Título</span>
+              <input
+                className="w-full border-none focus:ring-0 bg-transparent font-body-lg text-body-lg text-on-surface placeholder-outline-variant px-0"
+                placeholder="Dê um título para a publicação"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </label>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <div className="bg-surface-container-lowest rounded-2xl p-md main-card-shadow focus-within:ring-2 focus-within:ring-primary-container transition-all">
+              <div className="relative w-full">
+                <textarea
+                  ref={textareaRef}
+                  className="w-full border-none focus:ring-0 bg-transparent font-body-lg text-body-lg text-on-surface placeholder-outline-variant resize-none overflow-hidden"
+                  placeholder="Escreva aqui..."
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  rows="4"
+                />
+              </div>
+
+              <div className="flex flex-col gap-4 mt-4">
+                {imagePreviewUrl && (
+                  <div className="overflow-hidden rounded-[16px] bg-surface-container-highest w-32 h-32 relative">
+                    <img
+                      src={imagePreviewUrl}
+                      alt="Pré-visualização da imagem"
+                      className="h-full w-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={cancelImageSelection}
+                      className="absolute top-1 right-1 bg-black/60 hover:bg-black/80 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    onClick={openAttachmentPicker}
+                    className="text-on-surface-variant hover:text-primary transition-colors active:scale-90"
+                    aria-label="Adicionar imagem"
+                  >
+                    <span className="material-symbols-outlined text-[32px]" aria-hidden="true">image</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-surface-container-lowest rounded-2xl p-md main-card-shadow flex flex-col gap-4">
+              <div className="flex items-center gap-2">
+                <img src="/icons/categorias.png" alt="Categorias" className="w-8 h-8" />
+                <h1 className="font-headline-md text-headline-md text-on-surface">Categorias</h1>
+              </div>
+
+              <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar flex-nowrap">
+                {categoryOptions.map((category) => {
+                  const selected = selectedCategories.includes(category)
+
+                  return (
+                    <button
+                      key={category}
+                      type="button"
+                      onClick={() => toggleCategory(category)}
+                      className={`px-6 py-2 ${selected ? categoryStyles[category] : 'bg-surface-container-high text-on-surface-variant'} font-label-md text-label-md rounded-full active:scale-95 transition-transform chip-shadow whitespace-nowrap`}
+                      aria-pressed={selected}
+                    >
+                      {category}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+
+          <input
+            ref={attachmentInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleAttachmentChange}
+            className="hidden"
+          />
+
+          <div className="flex justify-start pb-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-[#8E9196] text-white font-headline-md text-headline-md px-12 py-3 rounded-full hover:bg-on-surface-variant active:scale-95 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Postando...' : 'Postar'}
+            </button>
+          </div>
+        </form>
+      </div>
+    )
   }
 
   return (

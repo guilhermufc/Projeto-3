@@ -194,9 +194,9 @@ export default function Search() {
   return (
     <div className="font-sans text-gray-900 pb-32 min-h-screen">
       {/* Top App Bar – Search & Navigation */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md px-6 py-4 space-y-4">
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md px-6 py-4 flex flex-col gap-4">
         {/* Top Navigation Row */}
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center md:hidden">
           <div className="flex items-center gap-4">
             <div className="relative">
               <div className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full">
@@ -479,7 +479,7 @@ export default function Search() {
       </section>
 
       {/* Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white px-8 py-4 flex justify-between items-center z-50 rounded-t-[32px] border-t border-gray-100">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white px-8 py-4 flex justify-between items-center z-50 rounded-t-[32px] border-t border-gray-100 md:hidden">
         <div className="w-16 h-16 bg-black flex items-center justify-center text-white shadow-lg rounded-full cursor-pointer">
           <span className="fi fi-br-search text-[22px] opacity-80" aria-hidden="true" />
         </div>

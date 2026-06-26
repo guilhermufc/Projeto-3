@@ -31,6 +31,7 @@ let mongoClient
 let mongoMemoryServer
 let usersCollection
 let postsCollection
+let schedulesCollection
 
 app.use(express.json())
 app.use(
@@ -166,10 +167,12 @@ const connectDatabase = async () => {
   const database = mongoClient.db(databaseName)
   usersCollection = database.collection('users')
   postsCollection = database.collection('posts')
+  schedulesCollection = database.collection('schedules')
 
   await usersCollection.createIndex({ username: 1 }, { unique: true })
   await usersCollection.createIndex({ email: 1 }, { unique: true })
   await postsCollection.createIndex({ createdAt: -1 })
+  await schedulesCollection.createIndex({ userId: 1, date: 1 })
 
   await resetDatabaseWithDefaultAdmin()
 }
@@ -386,6 +389,139 @@ app.post('/api/auth/register', async (req, res) => {
     res.status(500).json({ message: 'Erro ao registrar usuário' })
   }
 })
+
+// inicio calendario
+const serializeSchedule = (schedule) => ({
+  id: schedule._id.toString(),
+  user_id: schedule.userId?.toString?.() || schedule.userId,
+  date: schedule.date,
+  description: schedule.description,
+  done: Boolean(schedule.done),
+  created_at: schedule.createdAt || null,
+  updated_at: schedule.updatedAt || null,
+})
+
+app.get('/api/schedules', verifyToken, async (req, res) => {
+  try {
+    const { month } = req.query
+    const userId = new ObjectId(req.userId)
+
+    const filter = { userId }
+
+    if (month) {
+      filter.date = {
+        $gte: `${month}-01`,
+        $lte: `${month}-31`,
+      }
+    }
+
+    const schedules = await schedulesCollection
+      .find(filter)
+      .sort({ date: 1, createdAt: 1 })
+      .toArray()
+
+    res.json(schedules.map(serializeSchedule))
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao buscar agenda' })
+  }
+})
+
+app.post('/api/schedules', verifyToken, async (req, res) => {
+  const { date, description } = req.body
+
+  if (!date || !description || !description.trim()) {
+    return res.status(400).json({ message: 'Data e descrição são obrigatórias' })
+  }
+
+  try {
+    const result = await schedulesCollection.insertOne({
+      userId: new ObjectId(req.userId),
+      date,
+      description: description.trim(),
+      done: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+
+    const createdSchedule = await schedulesCollection.findOne({
+      _id: result.insertedId,
+    })
+
+    res.status(201).json(serializeSchedule(createdSchedule))
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao criar agenda' })
+  }
+})
+
+app.put('/api/schedules/:scheduleId', verifyToken, async (req, res) => {
+  const { scheduleId } = req.params
+  const { date, description, done } = req.body
+
+  if (!ObjectId.isValid(scheduleId)) {
+    return res.status(400).json({ message: 'Agenda inválida' })
+  }
+
+  try {
+    const userId = new ObjectId(req.userId)
+    const scheduleObjectId = new ObjectId(scheduleId)
+
+    const update = {
+      updatedAt: new Date(),
+    }
+
+    if (date) update.date = date
+    if (typeof description === 'string') update.description = description.trim()
+    if (typeof done === 'boolean') update.done = done
+
+    await schedulesCollection.updateOne(
+      {
+        _id: scheduleObjectId,
+        userId,
+      },
+      {
+        $set: update,
+      },
+    )
+
+    const updatedSchedule = await schedulesCollection.findOne({
+      _id: scheduleObjectId,
+      userId,
+    })
+
+    if (!updatedSchedule) {
+      return res.status(404).json({ message: 'Agenda não encontrada' })
+    }
+
+    res.json(serializeSchedule(updatedSchedule))
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao atualizar agenda' })
+  }
+})
+
+app.delete('/api/schedules/:scheduleId', verifyToken, async (req, res) => {
+  const { scheduleId } = req.params
+
+  if (!ObjectId.isValid(scheduleId)) {
+    return res.status(400).json({ message: 'Agenda inválida' })
+  }
+
+  try {
+    const result = await schedulesCollection.deleteOne({
+      _id: new ObjectId(scheduleId),
+      userId: new ObjectId(req.userId),
+    })
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'Agenda não encontrada' })
+    }
+
+    res.json({ message: 'Agenda apagada com sucesso' })
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao apagar agenda' })
+  }
+})
+// fim calendario
+
 //atualizar perfil de usuario logado
 app.put('/api/users/me', verifyToken, upload.single('avatar'), async (req, res) => {
   const { username, bio } = req.body

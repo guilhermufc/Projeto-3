@@ -258,7 +258,7 @@ export default function OtherProfile() {
       {/* END: MainContent */}
 
       {/* BEGIN: Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white px-8 py-4 flex justify-between items-center z-50 rounded-t-[32px] border-t border-gray-100 nav-shadow">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white px-8 py-4 flex justify-between items-center z-50 rounded-t-[32px] border-t border-gray-100 nav-shadow md:hidden">
         <div
           onClick={() => navigate('/search')}
           className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200 transition-colors"

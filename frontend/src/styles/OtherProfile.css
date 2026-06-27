@@ -1,0 +1,402 @@
+/* Estilos para a tela de perfil público de terceiros */
+
+/* Container da página */
+.other-profile-container {
+  font-family: 'Inter', sans-serif;
+  color: #1a1c1d;
+  background-color: #F8FAFC; /* bg-[#F8FAFC] */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Área de carregamento ou erro */
+.other-profile-loading {
+  font-family: 'Inter', sans-serif;
+  color: #64748b; /* text-slate-500 */
+  background-color: #F8FAFC;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+}
+
+.other-profile-error {
+  font-family: 'Inter', sans-serif;
+  color: #64748b;
+  background-color: #F8FAFC;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.other-profile-error p {
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.other-profile-error-btn {
+  padding: 8px 24px;
+  background-color: #e2e8f0;
+  border-radius: 9999px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  color: #334155;
+}
+
+/* Cabeçalho do perfil público */
+.other-profile-header {
+  padding: 16px;
+  padding-top: 24px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background-color: #F8FAFC;
+}
+
+.other-profile-header-row {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+}
+
+/* Caixa com avatar e informações do usuário */
+.other-profile-user-card {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* space-x-3 */
+  background-color: #ffffff;
+  border-radius: 16px; /* rounded-2xl */
+  padding: 16px; /* px-4 py-3 */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); /* card-shadow */
+  width: calc(100% - 60px);
+}
+
+/* Círculo do avatar */
+.other-profile-avatar-circle {
+  width: 64px; /* w-16 */
+  height: 64px; /* h-16 */
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  background-color: #ABF1A9; /* bg-[#ABF1A9] */
+  overflow: hidden;
+}
+
+.other-profile-avatar-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.other-profile-avatar-circle span {
+  font-size: 36px;
+  color: #ffffff;
+}
+
+/* Informações de texto */
+.other-profile-user-info h1 {
+  font-weight: 700;
+  line-height: 1.25;
+  font-size: 25px; /* text-[25px] */
+  color: #0f172a; /* text-slate-900 */
+  margin: 0;
+}
+
+.other-profile-user-info p {
+  color: #64748b; /* text-slate-500 */
+  font-weight: 500;
+  font-size: 15px;
+  margin: 0;
+}
+
+/* Botão de fechar/voltar */
+.other-profile-back-btn {
+  margin-top: 8px;
+  width: 44px; /* w-11 */
+  height: 44px; /* h-11 */
+  border-radius: 9999px;
+  border: none;
+  background-color: #ffffff;
+  color: #8B8B8B;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.other-profile-back-btn:hover {
+  background-color: #e2e8f0;
+}
+
+/* Caixa com a biografia */
+.other-profile-bio-row {
+  display: flex;
+  padding: 0 16px;
+  margin-bottom: 16px;
+  justify-content: start;
+}
+
+.other-profile-bio-box {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  width: calc(100% - 60px);
+  min-height: 37px;
+}
+
+.other-profile-bio-text {
+  font-weight: 500;
+  font-size: 20px;
+  color: #000000;
+  text-align: center;
+  word-break: break-word;
+}
+
+/* Conteúdo principal (Lista de posts) */
+.other-profile-main {
+  flex-grow: 1;
+  padding: 16px;
+  padding-bottom: 128px;
+}
+
+.other-profile-main h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  padding-left: 8px;
+}
+
+/* Grid/Lista de posts */
+.other-profile-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 24px; /* space-y-6 */
+}
+
+/* Card do post individual */
+.other-profile-post {
+  background-color: #ffffff;
+  border-radius: 32px; /* rounded-[32px] */
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  position: relative;
+}
+
+/* Crachá/Badge das categorias */
+.other-profile-post-badges {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: flex-end;
+  max-width: 45%;
+}
+
+.other-profile-badge {
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Cabeçalho do post (Autor + Data) */
+.other-profile-post-header {
+  display: flex;
+  align-items: start;
+  margin-bottom: 20px;
+}
+
+.other-profile-post-author-box {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+}
+
+.other-profile-post-avatar {
+  width: 56px;
+  height: 56px;
+  background-color: #ABF1A9;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.other-profile-post-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.other-profile-post-avatar span {
+  font-size: 28px;
+  color: #ffffff;
+}
+
+.other-profile-post-author-info {
+  padding-right: 8px;
+}
+
+.other-profile-post-author-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+  transition: color 0.2s ease;
+}
+
+.other-profile-post-author-name:hover {
+  color: #374151;
+}
+
+.other-profile-post-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #4b5563;
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
+/* Corpo do post (Texto e Imagem) */
+.other-profile-post-body {
+  margin-bottom: 24px;
+}
+
+.other-profile-post-content {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #1f2937;
+  margin: 0;
+}
+
+.other-profile-post-img-wrapper {
+  border-radius: 28px;
+  overflow: hidden;
+  background-color: #f1f5f9;
+  margin-top: 16px;
+  aspect-ratio: 4/3;
+}
+
+.other-profile-post-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Área de botões inferiores do post (Salvar) */
+.other-profile-post-actions {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+
+.other-profile-save-btn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.2s ease;
+}
+
+.other-profile-save-btn img {
+  width: 24px;
+  height: 24px;
+}
+
+.other-profile-save-btn span.fi {
+  font-size: 24px;
+  color: #9ca3af;
+  opacity: 0.6;
+}
+
+.other-profile-save-count {
+  font-size: 14px;
+  font-weight: 700;
+  color: #9ca3af;
+}
+
+/* Menu de navegação inferior */
+.other-profile-mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 50;
+  border-top-left-radius: 32px;
+  border-top-right-radius: 32px;
+  border-top: 1px solid #f3f3f5;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.03);
+}
+
+@media (min-width: 768px) {
+  .other-profile-mobile-nav {
+    display: none;
+  }
+}
+
+.other-profile-nav-item {
+  width: 56px;
+  height: 56px;
+  background-color: #f3f3f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.other-profile-nav-item:hover {
+  background-color: #e8e8ea;
+}
+
+.other-profile-nav-item span {
+  font-size: 22px;
+  opacity: 0.6;
+}
+
+.other-profile-nav-item-active {
+  width: 64px;
+  height: 64px;
+  background-color: #000000;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  cursor: pointer;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.other-profile-nav-item-active span {
+  font-size: 22px;
+  opacity: 0.8;
+}

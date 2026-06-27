@@ -1,0 +1,260 @@
+/* Estilos específicos para a tela de Login do aplicativo */
+
+/* Container geral da página de login */
+.login-container {
+  background-color: #F2F2F2; /* Cor de fundo padrão do aplicativo */
+  display: flex;
+  flex-direction: column;
+  font-family: 'Inter', sans-serif; /* Fonte padrão do corpo */
+  color: #1a1c1d; /* Cor do texto padrão */
+  min-height: 100vh;
+}
+
+/* Cabeçalho da página de login */
+.login-header {
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 24px 16px 4px 16px; /* pt-6 pb-1 px-margin-mobile */
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .login-header {
+    padding-left: 64px; /* px-margin-desktop no desktop */
+    padding-right: 64px;
+  }
+}
+
+/* Caixa com logo e título da marca */
+.login-logo-box {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* gap-sm */
+  justify-content: center;
+  margin-bottom: 16px; /* mb-4 */
+}
+
+/* Ícone de escola na logo */
+.login-logo-icon {
+  color: #333333;
+  font-size: 24px; /* text-headline-md */
+}
+
+/* Título principal do aplicativo */
+.login-brand-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 24px; /* text-headline-md */
+  font-weight: 700;
+  color: #333333;
+  margin: 0;
+}
+
+/* Área de conteúdo principal da tela */
+.login-main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px; /* py-10 px-margin-mobile */
+}
+
+/* Container do formulário com largura limitada */
+.login-box {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Título de chamada para login */
+.login-subtitle {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 28px;
+  color: #1A1A1A;
+  font-weight: 700;
+  margin-bottom: 32px; /* mb-8 */
+  margin-top: 16px;
+  text-align: center;
+}
+
+/* Caixa de aviso de erros */
+.login-error {
+  width: 100%;
+  background-color: #fee2e2; /* bg-red-100 */
+  border: 1px solid #fca5a5; /* border-red-400 */
+  color: #b91c1c; /* text-red-700 */
+  padding: 12px 16px; /* py-3 px-4 */
+  border-radius: 8px; /* rounded-lg */
+  margin-bottom: 16px; /* mb-4 */
+}
+
+/* Formulário de login */
+.login-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* space-y-4 */
+}
+
+/* Linha com input de texto (container relativo) */
+.login-input-group {
+  position: relative;
+  width: 100%;
+}
+
+/* Ícones decorativos à esquerda dentro dos inputs */
+.login-input-group .login-input-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #84727c; /* outline */
+  font-size: 20px;
+}
+
+/* Estilo do input de login */
+.login-input {
+  width: 100%;
+  border-radius: 12px; /* rounded-xl */
+  padding: 16px 16px 16px 48px; /* py-4 pl-12 pr-4 */
+  font-size: 16px; /* text-body-md */
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s ease;
+}
+
+.login-input::placeholder {
+  color: rgba(132, 114, 124, 0.6); /* placeholder:text-outline/60 */
+}
+
+/* Botão principal de login (cinza) */
+.login-button-primary {
+  width: 100%;
+  background-color: #8E8E8E;
+  color: #ffffff;
+  font-weight: 700;
+  padding: 14px 16px; /* py-3.5 */
+  border-radius: 9999px; /* rounded-full */
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px; /* mt-4 */
+}
+
+.login-button-primary:hover:not(:disabled) {
+  background-color: #7A7A7A;
+}
+
+.login-button-primary:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.login-button-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Links secundários como "Esqueceu a senha?" */
+.login-link-container {
+  text-align: center;
+  padding-top: 8px; /* pt-2 */
+}
+
+.login-link {
+  background: none;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  color: #8E8E8E;
+  cursor: pointer;
+  transition: colors 0.2s ease;
+}
+
+.login-link:hover {
+  color: #333333;
+}
+
+/* Container de botões adicionais no rodapé do formulário */
+.login-extra-actions {
+  width: 100%;
+  margin-top: 24px; /* mt-6 */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Botão para criar nova conta (lilás) */
+.login-button-secondary {
+  width: 100%;
+  background-color: #D1C9FF; /* bg-[#D1C9FF] */
+  color: #4339a9; /* text-[#574fbe] / on-tertiary-container */
+  font-weight: 700;
+  padding: 14px 16px; /* py-3.5 */
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.login-button-secondary:hover {
+  background-color: #C4BAFF; /* hover:bg-[#C4BAFF] */
+}
+
+.login-button-secondary:active {
+  transform: scale(0.98);
+}
+
+/* Rodapé institucional da página */
+.login-footer {
+  width: 100%;
+  padding: 32px 16px; /* py-8 px-margin-mobile */
+  border-top: 1px solid #E0E0E0;
+  margin-top: auto;
+}
+
+@media (min-width: 768px) {
+  .login-footer {
+    padding-left: 64px; /* px-margin-desktop no desktop */
+    padding-right: 64px;
+  }
+}
+
+/* Conteúdo interno do rodapé */
+.login-footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  color: #8E8E8E;
+}
+
+/* Linha com direitos autorais */
+.login-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* gap-xs */
+  width: 100%;
+}
+
+.login-footer-brand {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px; /* text-label-md */
+  font-weight: 700;
+  color: #333333;
+}
+
+.login-footer-copyright {
+  font-size: 14px; /* text-body-sm */
+}

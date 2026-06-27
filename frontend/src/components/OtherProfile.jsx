@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import { get, post } from '../services/api'
+import '../styles/OtherProfile.css' // Importa estilos customizados da tela (CSS vanilla)
 
+// Mapeamento de cores de categorias herdado do Tailwind para regras de estilo do CSS
 const categoryStyles = {
   Métodos:     'bg-[#FFAB6D] text-white',
   Leitura:     'bg-[#FF85D1] text-white',
@@ -26,12 +28,13 @@ const categoryStyles = {
 }
 
 export default function OtherProfile() {
-  const { username } = useParams()
+  const { username } = useParams() // Pega o nome do usuário cujos detalhes serão buscados via rota URL
   const navigate = useNavigate()
   const [profileUser, setProfileUser] = useState(null)
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
 
+  // Resolução da URL da imagem
   const resolveImageUrl = (imagePath) => {
     if (!imagePath) return ''
     if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
@@ -40,9 +43,10 @@ export default function OtherProfile() {
     return `http://localhost:3000${imagePath}`
   }
 
+  // Monitora alterações do username no link para atualizar as informações carregadas
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    if (!token) {
+    const storedUser = localStorage.getItem('user')
+    if (!storedUser) {
       navigate('/login')
       return
     }
@@ -50,19 +54,17 @@ export default function OtherProfile() {
     fetchProfileAndPosts()
   }, [username, navigate])
 
+  // Função assíncrona para buscar perfil e posts do usuário simultaneamente
   const fetchProfileAndPosts = async () => {
     try {
-      const token = localStorage.getItem('token')
-      const headers = { Authorization: `Bearer ${token}` }
-
-      // Buscamos simultaneamente o perfil e os posts daquele usuário
-      const [userRes, postsRes] = await Promise.all([
-        axios.get(`http://localhost:3000/api/users/${username}`, { headers }),
-        axios.get(`http://localhost:3000/api/posts?author=${username}`, { headers }),
+      // Faz requisições paralelas para ganhar performance
+      const [userData, postsData] = await Promise.all([
+        get(`/api/users/${username}`),
+        get(`/api/posts`, { params: { author: username } }),
       ])
 
-      setProfileUser(userRes.data)
-      setPosts(postsRes.data || [])
+      setProfileUser(userData)
+      setPosts(postsData || [])
     } catch (error) {
       console.error('Erro ao buscar perfil:', error)
       if (error.response?.status === 401) {
@@ -71,25 +73,24 @@ export default function OtherProfile() {
         navigate('/login')
       }
     } finally {
-      setLoading(false)
+      setLoading(false) // Finaliza o esqueleto de carregamento
     }
   }
 
+  // Executa a marcação/favoritar do post selecionado
   const handleToggleSave = async (postId) => {
     try {
-      const token = localStorage.getItem('token')
-      const response = await axios.post(`http://localhost:3000/api/posts/${postId}/save`, {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      const data = await post(`/api/posts/${postId}/save`, {})
 
-      const updatedPost = response.data?.post
+      const updatedPost = data?.post
 
       if (updatedPost) {
+        // Atualiza dinamicamente a contagem e estado visual sem recarregar a lista toda
         setPosts((currentPosts) =>
-          currentPosts.map((post) =>
-            post.id === postId
-              ? { ...post, saved_count: updatedPost.saved_count, is_saved: updatedPost.is_saved }
-              : post,
+          currentPosts.map((p) =>
+            p.id === postId
+              ? { ...p, saved_count: updatedPost.saved_count, is_saved: updatedPost.is_saved }
+              : p,
           ),
         )
       }
@@ -98,21 +99,23 @@ export default function OtherProfile() {
     }
   }
 
+  // Exibe tela de carregamento caso os dados estejam sendo buscados
   if (loading) {
     return (
-      <div className="font-sans text-gray-900 bg-[#F8FAFC] min-h-screen flex items-center justify-center">
-        <p className="text-slate-500 font-medium">Carregando perfil...</p>
+      <div className="other-profile-loading">
+        <p>Carregando perfil...</p>
       </div>
     )
   }
 
+  // Exibe tela de erro caso o username não exista no banco
   if (!profileUser) {
     return (
-      <div className="font-sans text-gray-900 bg-[#F8FAFC] min-h-screen flex flex-col items-center justify-center p-6">
-        <p className="text-slate-500 font-medium text-lg mb-4">Usuário não encontrado.</p>
+      <div className="other-profile-error">
+        <p>Usuário não encontrado.</p>
         <button
           onClick={() => navigate(-1)}
-          className="px-6 py-2 bg-gray-200 rounded-full font-bold text-gray-700"
+          className="other-profile-error-btn"
         >
           Voltar
         </button>
@@ -121,69 +124,73 @@ export default function OtherProfile() {
   }
 
   return (
-    <div className="font-sans text-gray-900 bg-[#F8FAFC] min-h-screen flex flex-col">
-      {/* BEGIN: MainHeader */}
-      <header className="p-4 pt-6 sticky top-0 z-20 bg-[#F8FAFC]">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center space-x-3 bg-white rounded-2xl px-4 py-3 card-shadow w-[calc(100%-60px)]">
-            <div className="w-16 h-16 rounded-full flex items-center justify-center shadow-sm bg-[#ABF1A9] overflow-hidden">
+    <div className="other-profile-container">
+      
+      {/* Cabeçalho do perfil público */}
+      <header className="other-profile-header">
+        <div className="other-profile-header-row">
+          
+          {/* Card com dados públicos de identificação */}
+          <div className="other-profile-user-card">
+            <div className="other-profile-avatar-circle">
               {profileUser.avatar ? (
                 <img
                   src={resolveImageUrl(profileUser.avatar)}
                   alt={profileUser.username}
-                  className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="fi fi-br-circle-user text-[36px] text-white opacity-80" aria-hidden="true" />
+                <span className="fi fi-br-circle-user text-[36px]" aria-hidden="true" />
               )}
             </div>
-          <div>
-              <h1 className="font-bold leading-tight text-[25px] text-slate-900">{profileUser.username}</h1>
-              <p className="text-slate-500 font-medium text-[15px]">
+            
+            <div className="other-profile-user-info">
+              <h1>{profileUser.username}</h1>
+              <p>
                 {posts.length} {posts.length === 1 ? 'Publicação' : 'Publicações'}
               </p>
             </div>
           </div>
+
+          {/* Botão de Fechar / Retornar à tela anterior */}
           <button
             onClick={() => navigate(-1)}
             aria-label="Fechar"
-            className="mt-2 w-11 h-11 rounded-full hover:bg-slate-200 transition-colors flex items-center justify-center bg-white text-[#8B8B8B] card-shadow"
+            className="other-profile-back-btn"
           >
-            <span className="fi fi-br-cross text-[20px]" aria-hidden="true" />
+            <span className="fi fi-br-cross" aria-hidden="true" />
           </button>
         </div>
       </header>
       
-      {/* Bio Section */}
+      {/* Biografia pública do usuário (se cadastrada) */}
       {profileUser.bio && (
-        <div className="flex px-4 mb-4 justify-start">
-          <div className="bg-white rounded-2xl card-shadow flex items-center justify-center px-4 py-2 w-[calc(100%-60px)] min-h-[37px]">
-            <span className="font-medium text-[20px] text-black text-center break-words">{profileUser.bio}</span>
+        <div className="other-profile-bio-row">
+          <div className="other-profile-bio-box">
+            <span className="other-profile-bio-text">{profileUser.bio}</span>
           </div>
         </div>
       )}
-      {/* END: MainHeader */}
 
-      {/* BEGIN: MainContent */}
-      <main className="flex-grow p-4 pb-32">
-        <h2 className="text-2xl font-bold mb-4 px-2">Publicações</h2>
+      {/* Conteúdo principal - Publicações do usuário visualizado */}
+      <main className="other-profile-main">
+        <h2>Publicações</h2>
 
-        {/* BEGIN: Feed */}
-        <section className="space-y-6">
+        <section className="other-profile-feed">
           {posts.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-500 font-medium">Nenhum post publicado ainda.</p>
+            <div style={{ textAlign: 'center', padding: '48px 0' }}>
+              <p style={{ color: '#6b7280', fontWeight: '500' }}>Nenhum post publicado ainda.</p>
             </div>
           ) : (
             posts.map((post) => (
-              <article key={post.id} className="bg-white rounded-[32px] p-6 card-shadow relative">
-                {/* Categories – top right corner */}
+              <article key={post.id} className="other-profile-post">
+                
+                {/* Categorias fixadas no topo direito do card */}
                 {post.categories && post.categories.length > 0 && (
-                  <div className="absolute top-5 right-5 flex flex-wrap gap-1 justify-end max-w-[45%]">
+                  <div className="other-profile-post-badges">
                     {post.categories.map((cat) => (
                       <span
                         key={cat}
-                        className={`px-3 py-1 rounded-full text-[11px] font-bold whitespace-nowrap ${categoryStyles[cat] || 'bg-gray-200 text-gray-600'}`}
+                        className={`other-profile-badge ${categoryStyles[cat] || 'bg-gray-200 text-gray-600'}`}
                       >
                         {cat}
                       </span>
@@ -191,91 +198,81 @@ export default function OtherProfile() {
                   </div>
                 )}
 
-                 <div className="flex items-start mb-5">
+                {/* Dados da autoria do post */}
+                <div className="other-profile-post-header">
                   <div
-                    className="flex items-center gap-4 cursor-pointer"
+                    className="other-profile-post-author-box"
                     onClick={() => navigate(`/profile/${post.author}`)}
                   >
-                    <div className="w-14 h-14 bg-[#ABF1A9] rounded-full flex items-center justify-center overflow-hidden">
+                    <div className="other-profile-post-avatar">
                       {post.authorAvatar ? (
                         <img
                           src={resolveImageUrl(post.authorAvatar)}
                           alt={post.author}
-                          className="w-full h-full object-cover"
                         />
                       ) : (
-                        <span className="fi fi-br-circle-user text-[28px] text-white opacity-80" aria-hidden="true" />
+                        <span className="fi fi-br-circle-user text-[28px]" aria-hidden="true" />
                       )}
                     </div>
-                    <div className="pr-2">
-                      <h3 className="text-[20px] font-bold text-gray-900 hover:text-gray-700 transition-colors">{post.author}</h3>
-                      {post.title && <p className="text-[15px] font-bold leading-tight text-gray-600 mt-1">{post.title}</p>}
+                    <div className="other-profile-post-author-info">
+                      <h3 className="other-profile-post-author-name">{post.author}</h3>
+                      {post.title && <p className="other-profile-post-title">{post.title}</p>}
                     </div>
                   </div>
                 </div>
 
-                <div className="mb-6">
-                  <p className="text-[18px] font-medium leading-snug text-gray-800">
+                {/* Conteúdo escrito e imagem do post */}
+                <div className="other-profile-post-body">
+                  <p className="other-profile-post-content">
                     {post.content}
                   </p>
 
-                  {/* Image preview */}
                   {post.image && (
-                    <div className="rounded-[28px] overflow-hidden bg-slate-100 mt-4 aspect-[4/3]">
-                      <img alt="Post" className="w-full h-full object-cover" src={resolveImageUrl(post.image)} />
+                    <div className="other-profile-post-img-wrapper">
+                      <img alt="Post" src={resolveImageUrl(post.image)} />
                     </div>
                   )}
                 </div>
 
-                {/* Save button below image/content, aligned left */}
-                <div className="flex items-center justify-start">
+                {/* Ações inferiores: Toggle Salvar Post */}
+                <div className="other-profile-post-actions">
                   <button
                     type="button"
                     onClick={() => handleToggleSave(post.id)}
-                    className="flex items-center gap-2 rounded-full transition-colors"
+                    className="other-profile-save-btn"
                     aria-pressed={Boolean(post.is_saved)}
                     title={post.is_saved ? 'Remover salvo' : 'Salvar'}
                   >
-                      {post.is_saved ? (
-                        <img
-                          src="/icons/bookmark_prenchido.png"
-                          alt="Salvo"
-                          className="w-6 h-6"
-                          style={{ filter: 'brightness(0) saturate(100%) invert(73%) sepia(35%) saturate(1637%) hue-rotate(345deg) brightness(103%) contrast(101%)' }}
-                        />
-                      ) : (
-                        <span className="fi fi-br-bookmark text-[24px] text-gray-400 opacity-60" aria-hidden="true" />
-                      )}
-                    <span className="text-sm font-bold text-gray-400">{post.saved_count || 0}</span>
+                    {post.is_saved ? (
+                      <img
+                        src="/icons/bookmark_prenchido.png"
+                        alt="Salvo"
+                        style={{ filter: 'brightness(0) saturate(100%) invert(73%) sepia(35%) saturate(1637%) hue-rotate(345deg) brightness(103%) contrast(101%)' }}
+                      />
+                    ) : (
+                      <span className="fi fi-br-bookmark" aria-hidden="true" />
+                    )}
+                    <span className="other-profile-save-count">{post.saved_count || 0}</span>
                   </button>
                 </div>
               </article>
             ))
           )}
         </section>
-        {/* END: Feed */}
       </main>
-      {/* END: MainContent */}
 
-      {/* BEGIN: Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white px-8 py-4 flex justify-between items-center z-50 rounded-t-[32px] border-t border-gray-100 nav-shadow md:hidden">
-        <div
-          onClick={() => navigate('/search')}
-          className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200 transition-colors"
-        >
-          <span className="fi fi-br-search text-[22px] opacity-60" aria-hidden="true" />
+      {/* Menu inferior no Celular */}
+      <nav className="other-profile-mobile-nav">
+        <div onClick={() => navigate('/search')} className="other-profile-nav-item">
+          <span className="fi fi-br-search" aria-hidden="true" />
         </div>
-        <div 
-          onClick={() => navigate('/feed')}
-          className="w-16 h-16 bg-black flex items-center justify-center text-white shadow-lg rounded-full cursor-pointer hover:bg-gray-900 transition-colors"
-        >
-          <span className="fi fi-br-home text-[22px] opacity-80" aria-hidden="true" />
+        <div onClick={() => navigate('/feed')} className="other-profile-nav-item-active">
+          <span className="fi fi-br-home" aria-hidden="true" />
         </div>
-        <div className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200 transition-colors">
-          <span className="fi fi-br-calendar text-[22px] opacity-60" aria-hidden="true" />
+        <div onClick={() => navigate('/calendar')} className="other-profile-nav-item">
+          <span className="fi fi-br-calendar" aria-hidden="true" />
         </div>
       </nav>
-      {/* END: Bottom Navigation */}
     </div>
   )
 }

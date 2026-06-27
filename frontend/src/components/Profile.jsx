@@ -1,79 +1,77 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import { put } from '../services/api'
+import '../styles/Profile.css' // Importa estilos customizados da tela de perfil (CSS vanilla)
 
 export default function Profile() {
   const navigate = useNavigate()
 
+  // Lê o usuário ativo do cache do navegador
   const user = JSON.parse(localStorage.getItem('user'))
+  
+  // Estados de controle de modificações locais no perfil
   const [fotoAlterada, setFotoAlterada] = useState(false)
   const [nome, setNome] = useState(user?.username || 'Usuário')
   const [bio, setBio] = useState(user?.bio || '')
+  
+  // Define o avatar padrão a ser exibido
   const [foto, setFoto] = useState(
      user?.avatar ? `http://localhost:3000${user.avatar}` : null
   )
+  
+  // Estados auxiliares para comparação de alterações (evita requisições à toa)
   const [nomeSalvo, setNomeSalvo] = useState(user?.username || 'Usuário')
   const [bioSalva, setBioSalva] = useState(user?.bio || '')
   const [fotoArquivo, setFotoArquivo] = useState(null)
+  
+  // Verifica se o usuário modificou algum dado textual ou imagem
   const nomeAlterado = nome !== nomeSalvo
   const bioAlterada = bio !== bioSalva
+  const houveAlteracao = nomeAlterado || bioAlterada || fotoAlterada
+  const apenasFotoAlterada = fotoAlterada && !nomeAlterado && !bioAlterada
 
-  const houveAlteracao =
-    nomeAlterado ||
-    bioAlterada ||
-    fotoAlterada
-
-  const apenasFotoAlterada =
-    fotoAlterada && !nomeAlterado && !bioAlterada
-
+  // Trata a seleção de arquivo de imagem local e gera a URL de pré-visualização
   function atualizarFoto(event) {
     const arquivo = event.target.files[0]
 
-      if (arquivo) {
-        const imagemUrl = URL.createObjectURL(arquivo)
-
-        setFoto(imagemUrl)
-        setFotoArquivo(arquivo)
-        setFotoAlterada(true)
-      }
+    if (arquivo) {
+      const imagemUrl = URL.createObjectURL(arquivo)
+      setFoto(imagemUrl)
+      setFotoArquivo(arquivo)
+      setFotoAlterada(true)
+    }
   }
 
+  // Desloga e limpa a sessão local
   function sair() {
-  localStorage.removeItem('user')
-  navigate('/login')
+    localStorage.removeItem('user')
+    localStorage.removeItem('token')
+    navigate('/login')
   }
+
+  // Envia as alterações via multipart/form-data (FormData) para o endpoint PUT /api/users/me
   async function salvarAlteracoes() {
     try {
-      const token = localStorage.getItem('token')
-
       const formData = new FormData()
-
-      formData.append('username', nome)
+      formData.append('username', nome) 
       formData.append('bio', bio)
 
       if (fotoArquivo) {
         formData.append('avatar', fotoArquivo)
       }
 
-      const response = await axios.put(
-        'http://localhost:3000/api/users/me',
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          
-          },
-        },
-      )
+      // Envia os dados usando o wrapper do fetch em services/api.js
+      const data = await put('/api/users/me', formData)
 
-      localStorage.setItem('user', JSON.stringify(response.data.user))
-      localStorage.setItem('token', response.data.token)
+      // Atualiza o localStorage com os novos dados do usuário
+      localStorage.setItem('user', JSON.stringify(data.user))
 
-      setNomeSalvo(response.data.user.username)
-      setBioSalva(response.data.user.bio)
+      // Reseta os estados auxiliares para ocultar o botão de confirmação
+      setNomeSalvo(data.user.username)
+      setBioSalva(data.user.bio)
 
-      if (response.data.user.avatar) {
-        setFoto(`http://localhost:3000${response.data.user.avatar}`)
+      if (data.user.avatar) {
+        setFoto(`http://localhost:3000${data.user.avatar}`)
       }
 
       setFotoAlterada(false)
@@ -84,37 +82,32 @@ export default function Profile() {
       alert(error.response?.data?.message || 'Erro ao salvar alterações')
     }
   }
+
   return (
-    <div className="font-sans text-gray-900 pb-32 min-h-screen bg-[#F4F4F4] md:bg-transparent">
-      <main className="p-4 md:p-8 flex justify-center items-start pt-8 md:pt-16 bg-[#F4F4F4] md:bg-transparent">
-        <div className="relative w-full max-w-md bg-[#F4F4F4] md:bg-white md:card-shadow md:border md:border-gray-100 p-6 md:p-8 rounded-3xl flex flex-col items-center gap-9">
+    <div className="profile-container">
+      <main className="profile-main">
+        <div className="profile-card">
+          
+          {/* Botão de Fechar no celular (volta pro feed) */}
           <button
             onClick={() => navigate('/feed')}
-            className="absolute top-6 left-6 cursor-pointer md:hidden"
+            className="profile-close-btn"
+            title="Voltar"
           >
-            <span
-              className="material-symbols-outlined text-[28px] text-[#333333]"
-              aria-hidden="true"
-            >
-              close
-            </span>
+            <span className="material-symbols-outlined" aria-hidden="true">close</span>
           </button>
 
-          <div className="relative flex flex-col items-center mt-4">
-            <div className="w-32 h-32 bg-[#A2E9A6] rounded-full flex items-center justify-center overflow-hidden border-4 border-white shadow-sm">
+          {/* Área da foto de perfil com botão de upload */}
+          <div className="profile-avatar-wrapper">
+            <div className="profile-avatar-circle">
               {foto ? (
-                <img src={foto} alt="Foto de perfil" className="w-full h-full object-cover" />
-                    ) : (
-                <span className="material-symbols-outlined text-white text-6xl">
-                  account_circle
-            </span>
+                <img src={foto} alt="Foto de perfil" />
+              ) : (
+                <span className="material-symbols-outlined">account_circle</span>
               )}
             </div>
 
-            <label
-              htmlFor="upload-foto"
-              className="absolute -bottom-2 bg-gray-500/80 hover:bg-gray-600 text-white text-xs px-3 py-1 rounded-full cursor-pointer transition-all shadow-sm"
-            >
+            <label htmlFor="upload-foto" className="profile-avatar-edit-label">
               Editar
             </label>
 
@@ -124,77 +117,71 @@ export default function Profile() {
               accept="image/*"
               className="hidden"
               onChange={atualizarFoto}
+              style={{ display: 'none' }}
             />
           </div>
 
-          <div className="w-full bg-white rounded-xl px-4 py-5 flex items-center justify-between shadow-xs border border-gray-100">
+          {/* Campo para editar o Nome */}
+          <div className="profile-field-box">
             <input
               type="text"
               value={nome}
               onChange={(event) => setNome(event.target.value)}
-              className="w-full font-bold text-center text-gray-800 text-lg bg-transparent focus:outline-none"
+              className="profile-field-input"
               title="Clique para editar o nome"
             />
-            <span className="text-gray-400 ml-2">✎</span>
+            <span className="profile-field-icon">✎</span>
           </div>
 
-          <div className="w-full bg-white rounded-xl px-4 py-6 flex items-center justify-between shadow-xs border border-gray-100">
+          {/* Campo para editar a Biografia */}
+          <div className="profile-field-box profile-field-box-large">
             <input
               type="text"
               value={bio}
               onChange={(event) => setBio(event.target.value)}
               placeholder="Biografia..."
-              className="w-full text-center text-gray-800 font-medium bg-transparent focus:outline-none placeholder-gray-300"
+              className="profile-field-input profile-field-input-bio"
               title="Clique para editar a biografia"
             />
-            <span className="text-gray-400 ml-2">✎</span>
+            <span className="profile-field-icon">✎</span>
           </div>
 
+          {/* Atalho para ir à tela de Posts Salvos */}
           <button
             onClick={() => navigate('/salvos')}
-            className="w-3/4 bg-white hover:bg-gray-50 text-gray-800 font-semibold py-5 px-6 rounded-xl flex items-center justify-center gap-3 shadow-xs border border-gray-100 transition-all active:scale-98 cursor-pointer"
+            className="profile-btn-saved"
           >
-            <span className="material-symbols-outlined text-[#A78BFA] text-lg">
-              bookmark
-            </span>
-            <span className="text-lg">Salvos</span>
+            <span className="material-symbols-outlined">bookmark</span>
+            <span>Salvos</span>
           </button>
 
+          {/* Botão de salvar alterações (exibido apenas se houve modificações) */}
           {houveAlteracao && (
-          <button onClick={salvarAlteracoes}
-           className="w-3/4 bg-green-500 hover:bg-green-600 text-white font-semibold py-5 px-6 rounded-xl flex items-center justify-center gap-3 shadow-xs border border-green-500 transition-all active:scale-98 cursor-pointer"
-          >
-          <span className="text-white text-lg">✓</span>
-          <span className="text-lg">
-            {apenasFotoAlterada ? 'Salvar Foto' : 'Salvar Alterações'}
-          </span>
-          </button>
-        )}
-          <button
-            onClick={sair}
-            className="md:hidden mt-2 w-32 bg-[#FF80DF] hover:bg-[#ff66d6] text-white font-medium py-2 rounded-full shadow-md transition-all active:scale-95 cursor-pointer text-center"
-          >
+            <button onClick={salvarAlteracoes} className="profile-btn-submit">
+              <span>✓</span>
+              <span>
+                {apenasFotoAlterada ? 'Salvar Foto' : 'Salvar Alterações'}
+              </span>
+            </button>
+          )}
+
+          {/* Botão de sair da conta */}
+          <button onClick={sair} className="profile-btn-logout">
             Sair
           </button>
         </div>
       </main>
 
-      {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white px-8 py-4 flex justify-between items-center z-50 rounded-t-[32px] border-t border-gray-100 nav-shadow md:hidden">
-        <div
-          onClick={() => navigate('/search')}
-          className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200 transition-colors"
-        >
-          <span className="fi fi-br-search text-[22px] opacity-60" aria-hidden="true" />
+      {/* Menu de navegação inferior (exibido apenas em celulares) */}
+      <nav className="profile-mobile-nav">
+        <div onClick={() => navigate('/search')} className="profile-nav-item">
+          <span className="fi fi-br-search" aria-hidden="true" />
         </div>
-        <div
-          onClick={() => navigate('/feed')}
-          className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200 transition-colors"
-        >
-          <span className="fi fi-br-home text-[22px] opacity-60" aria-hidden="true" />
+        <div onClick={() => navigate('/feed')} className="profile-nav-item">
+          <span className="fi fi-br-home" aria-hidden="true" />
         </div>
-        <div className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200 transition-colors">
-          <span className="fi fi-br-calendar text-[22px] opacity-60" aria-hidden="true" />
+        <div onClick={() => navigate('/calendar')} className="profile-nav-item">
+          <span className="fi fi-br-calendar" aria-hidden="true" />
         </div>
       </nav>
     </div>

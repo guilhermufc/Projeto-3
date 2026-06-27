@@ -1,0 +1,476 @@
+/* Estilos para a tela do Calendário/Agenda */
+
+/* Container da página */
+.calendar-container {
+  min-height: 100vh;
+  background-color: #F4F4F4;
+  font-family: 'Inter', sans-serif;
+  padding: 24px;
+  padding-bottom: 128px; /* pb-32 */
+}
+
+/* Estrutura do grid (duas colunas no desktop) */
+.calendar-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 64rem; /* max-w-5xl / 4xl */
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 768px) {
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+
+/* Coluna da esquerda (Calendário em si) */
+.calendar-col-left {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .calendar-col-left {
+    grid-column: span 7 / span 7;
+  }
+}
+
+/* Título superior do cabeçalho */
+.calendar-title-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.calendar-title-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 16px 24px;
+  flex-grow: 1;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-xs */
+}
+
+.calendar-title-card h1 {
+  font-size: 24px; /* text-2xl */
+  font-weight: 800;
+  color: #000000;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+/* Botão de Fechar no calendário */
+.calendar-close-btn {
+  background-color: #ffffff;
+  color: #9ca3af;
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+@media (min-width: 768px) {
+  .calendar-close-btn {
+    display: none; /* md:hidden */
+  }
+}
+
+.calendar-close-btn:hover {
+  background-color: #f3f3f5;
+  color: #4b5563;
+}
+
+.calendar-close-btn span {
+  font-size: 18px;
+}
+
+/* Card central do calendário contendo a matriz de dias */
+.calendar-card {
+  background-color: #ffffff;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  width: 100%;
+}
+
+/* Navegador de meses (Anterior/Próximo) */
+.calendar-month-selector {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.calendar-month-selector h2 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #000000;
+  margin: 0;
+}
+
+.calendar-month-nav {
+  display: flex;
+  gap: 16px;
+  color: #4b5563;
+  font-weight: 700;
+}
+
+.calendar-month-nav-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  color: #4b5563;
+  padding: 0 4px;
+  transition: color 0.2s ease;
+}
+
+.calendar-month-nav-btn:hover {
+  color: #000000;
+}
+
+/* Grid da matriz do calendário */
+.calendar-days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  border-top: 1px solid #f3f3f5;
+  border-left: 1px solid #f3f3f5;
+  text-align: center;
+}
+
+/* Célula do dia da semana */
+.calendar-weekday-cell {
+  padding: 12px 0;
+  font-weight: 600;
+  color: #1f2937;
+  border-bottom: 1px solid #f3f3f5;
+  border-right: 1px solid #f3f3f5;
+}
+
+/* Célula do dia do mês (Botão interativo) */
+.calendar-day-btn {
+  height: 70px;
+  width: 100%;
+  font-weight: 500;
+  border-bottom: 1px solid #f3f3f5;
+  border-right: 1px solid #f3f3f5;
+  background: transparent;
+  border-top: none;
+  border-left: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-day-btn-out-month {
+  color: #d1d5db; /* text-gray-300 */
+  background-color: rgba(249, 250, 251, 0.5); /* bg-gray-50/50 */
+}
+
+.calendar-day-btn-current-month {
+  color: #1f2937;
+}
+
+/* Marcadores de eventos e feriados */
+.calendar-day-btn-has-events {
+  background-color: #A2E9A6; /* bg-[#A2E9A6] */
+  font-weight: 700;
+}
+
+.calendar-day-btn-is-holiday {
+  background-color: #FBC07F; /* bg-[#FBC07F] */
+  font-weight: 700;
+}
+
+/* Dia selecionado */
+.calendar-day-btn-selected {
+  outline: 1px solid #000000;
+  outline-offset: -1px;
+}
+
+/* Dia atual (Hoje) */
+.calendar-day-today-indicator {
+  width: 28px; /* w-7 */
+  height: 28px; /* h-7 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: #e5e7eb; /* bg-gray-200 */
+}
+
+.calendar-day-today-indicator-none {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Coluna da direita (Card de Feriados e CRUD da Agenda) */
+.calendar-col-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .calendar-col-right {
+    grid-column: span 5 / span 5;
+    margin-top: 72px; /* md:mt-[72px] */
+  }
+}
+
+/* Card informativo de Feriados */
+.calendar-holiday-card {
+  background-color: #FBC07F; /* bg-[#FBC07F] */
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #111827;
+}
+
+.calendar-holiday-date {
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.calendar-holiday-name {
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.calendar-holiday-desc {
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 4px;
+  margin: 0;
+}
+
+/* Card com tarefas da agenda do dia */
+.calendar-schedule-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 160px;
+}
+
+.calendar-schedule-title {
+  font-weight: 800;
+  font-size: 14px;
+  color: #000000;
+  margin: 0;
+  margin-bottom: 8px;
+}
+
+/* Lista de compromissos */
+.calendar-schedule-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Item de compromisso individual */
+.calendar-schedule-item {
+  border-radius: 12px;
+  padding: 12px;
+  background-color: #f9fafb; /* bg-gray-50 */
+}
+
+.calendar-schedule-item-done {
+  background-color: #f0fdf4; /* bg-green-50 */
+}
+
+.calendar-schedule-item-text {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.625;
+  color: #1f2937;
+  margin: 0;
+}
+
+.calendar-schedule-item-text-done {
+  color: #9ca3af;
+  text-decoration: line-through;
+}
+
+/* Linha de botões de ação do item de compromisso */
+.calendar-schedule-item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  margin-top: 12px;
+}
+
+.calendar-action-btn-gray {
+  background-color: #f3f3f5;
+  color: #9ca3af;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.calendar-action-btn-gray:hover {
+  background-color: #e5e7eb;
+  color: #4b5563;
+}
+
+.calendar-action-btn-green {
+  background-color: #A2E9A6;
+  color: #ffffff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.calendar-action-btn-green:hover {
+  background-color: #8ee093;
+}
+
+.calendar-action-btn-red {
+  background-color: #fee2e2;
+  color: #f87171;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.calendar-action-btn-red:hover {
+  background-color: #fca5a5;
+  color: #b91c1c;
+}
+
+/* Área de formulário para adicionar compromissos */
+.calendar-add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.calendar-schedule-textarea {
+  width: 100%;
+  min-height: 80px;
+  background-color: #f9fafb;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #1f2937;
+  border: none;
+  outline: none;
+  resize: none;
+}
+
+.calendar-schedule-textarea::placeholder {
+  color: #9ca3af;
+}
+
+.calendar-add-btn {
+  background-color: #000000;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 12px 0;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.calendar-add-btn:hover {
+  background-color: #1f2937;
+}
+
+/* Barra inferior (Mobile apenas) */
+.calendar-mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 50;
+  border-top-left-radius: 32px;
+  border-top-right-radius: 32px;
+  border-top: 1px solid #f3f3f5;
+}
+
+@media (min-width: 768px) {
+  .calendar-mobile-nav {
+    display: none;
+  }
+}
+
+.calendar-nav-item {
+  width: 56px;
+  height: 56px;
+  background-color: #f3f3f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.calendar-nav-item:hover {
+  background-color: #e8e8ea;
+}
+
+.calendar-nav-item span {
+  font-size: 22px;
+  opacity: 0.6;
+}
+
+.calendar-nav-item-active {
+  width: 64px;
+  height: 64px;
+  background-color: #000000;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  cursor: pointer;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-nav-item-active span {
+  font-size: 22px;
+  opacity: 0.8;
+}

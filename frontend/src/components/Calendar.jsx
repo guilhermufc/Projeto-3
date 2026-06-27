@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import { get, post as apiPost, put, del, fetchExternal } from '../services/api'
+import '../styles/Calendar.css' // Importa estilos customizados da tela de Calendário (CSS vanilla)
 
+// Nomes dos meses em português
 const monthNames = [
   'Janeiro',
   'Fevereiro',
@@ -17,8 +19,10 @@ const monthNames = [
   'Dezembro',
 ]
 
+// Abreviações dos dias da semana
 const weekDays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']
 
+// Converte uma instância de Date para string do tipo AAAA-MM-DD
 function formatDateKey(date) {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, '0')
@@ -27,11 +31,13 @@ function formatDateKey(date) {
   return `${year}-${month}-${day}`
 }
 
+// Converte string AAAA-MM-DD para o formato brasileiro DD/MM/AAAA
 function formatDatePt(dateKey) {
   const [year, month, day] = dateKey.split('-')
   return `${day}/${month}/${year}`
 }
 
+// Retorna a chave do mês no formato AAAA-MM
 function getMonthKey(date) {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, '0')
@@ -39,6 +45,7 @@ function getMonthKey(date) {
   return `${year}-${month}`
 }
 
+// Gera a matriz com os 35 dias a serem exibidos no calendário
 function getCalendarDays(currentDate) {
   const year = currentDate.getFullYear()
   const month = currentDate.getMonth()
@@ -46,6 +53,7 @@ function getCalendarDays(currentDate) {
   const firstDayOfMonth = new Date(year, month, 1)
   const startDay = firstDayOfMonth.getDay()
 
+  // Define o ponto de partida na grade (pode ser o fim do mês anterior)
   const firstDayGrid = new Date(year, month, 1 - startDay)
 
   const days = []
@@ -79,41 +87,43 @@ export default function Calendar() {
   const monthKey = getMonthKey(currentDate)
   const year = currentDate.getFullYear()
 
+  // Memoiza a matriz de dias para evitar novos cálculos desnecessários no render
   const days = useMemo(() => getCalendarDays(currentDate), [currentDate])
 
+  // Filtra as tarefas e feriados do dia selecionado
   const selectedItems = items.filter((item) => item.date === selectedDate)
   const selectedHoliday = holidays.find(
-  (holiday) => holiday.date === selectedDate
+    (holiday) => holiday.date === selectedDate
   )  
   const todayKey = formatDateKey(new Date())
 
+  // Busca a agenda do mês selecionado toda vez que o mês muda
   useEffect(() => {
-    const token = localStorage.getItem('token')
+    const storedUser = localStorage.getItem('user')
 
-    if (!token) {
+    if (!storedUser) {
       navigate('/login')
       return
     }
 
     fetchSchedule()
-    }, [monthKey, navigate])
+  }, [monthKey, navigate])
 
-    useEffect(() => {
+  // Busca feriados nacionais daquele ano
+  useEffect(() => {
     fetchHolidays()
-    }, [year])
+  }, [year])
 
+  // Busca compromissos do usuário logado no backend
   async function fetchSchedule() {
     try {
       setLoading(true)
 
-      const token = localStorage.getItem('token')
-
-      const response = await axios.get('http://localhost:3000/api/schedules', {
+      const data = await get('/api/schedules', {
         params: { month: monthKey },
-        headers: { Authorization: `Bearer ${token}` },
       })
 
-      setItems(response.data || [])
+      setItems(data || [])
     } catch (error) {
       console.error('Erro ao buscar agenda:', error)
 
@@ -127,20 +137,21 @@ export default function Calendar() {
     }
   }
   
-    async function fetchHolidays() {
-        try {
-            const response = await axios.get(
-            `https://brasilapi.com.br/api/feriados/v1/${year}`
-            )
+  // Consome API externa de feriados nacionais do Brasil
+  async function fetchHolidays() {
+    try {
+      const data = await fetchExternal(
+        `https://brasilapi.com.br/api/feriados/v1/${year}`
+      )
 
-            setHolidays(response.data || [])
-        } catch (error) {
-            console.error('Erro ao buscar feriados:', error)
-            setHolidays([])
-        }
+      setHolidays(data || [])
+    } catch (error) {
+      console.error('Erro ao buscar feriados:', error)
+      setHolidays([])
     }
+  }
 
-
+  // Volta um mês no calendário
   function previousMonth() {
     setCurrentDate((current) => {
       const newDate = new Date(current)
@@ -149,6 +160,7 @@ export default function Calendar() {
     })
   }
 
+  // Avança um mês no calendário
   function nextMonth() {
     setCurrentDate((current) => {
       const newDate = new Date(current)
@@ -157,17 +169,20 @@ export default function Calendar() {
     })
   }
 
+  // Trata a seleção de um dia no calendário
   function selectDay(day) {
     setSelectedDate(day.dateKey)
     setEditingItem(null)
     setDescription('')
   }
 
+  // Inicia edição de um compromisso populando a caixa de texto
   function startEditing(item) {
     setEditingItem(item)
     setDescription(item.description)
   }
 
+  // Salva ou atualiza um compromisso
   async function saveSchedule() {
     if (!description.trim()) {
       alert('Digite uma descrição para a agenda.')
@@ -175,38 +190,33 @@ export default function Calendar() {
     }
 
     try {
-      const token = localStorage.getItem('token')
-
       if (editingItem) {
-        const response = await axios.put(
-          `http://localhost:3000/api/schedules/${editingItem.id}`,
+        // Envia requisição PUT para salvar as alterações do compromisso
+        const data = await put(
+          `/api/schedules/${editingItem.id}`,
           {
             description,
             date: selectedDate,
           },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
         )
 
+        // Atualiza a lista local com os dados modificados
         setItems((currentItems) =>
           currentItems.map((item) =>
-            item.id === editingItem.id ? response.data : item,
+            item.id === editingItem.id ? data : item,
           ),
         )
       } else {
-        const response = await axios.post(
-          'http://localhost:3000/api/schedules',
+        // Envia requisição POST para registrar novo compromisso
+        const data = await apiPost(
+          '/api/schedules',
           {
             date: selectedDate,
             description,
           },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
         )
 
-        setItems((currentItems) => [...currentItems, response.data])
+        setItems((currentItems) => [...currentItems, data])
       }
 
       setDescription('')
@@ -216,23 +226,19 @@ export default function Calendar() {
     }
   }
 
+  // Marca um compromisso como Concluído / Desfazer conclusão
   async function toggleDone(item) {
     try {
-      const token = localStorage.getItem('token')
-
-      const response = await axios.put(
-        `http://localhost:3000/api/schedules/${item.id}`,
+      const data = await put(
+        `/api/schedules/${item.id}`,
         {
           done: !item.done,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
         },
       )
 
       setItems((currentItems) =>
         currentItems.map((scheduleItem) =>
-          scheduleItem.id === item.id ? response.data : scheduleItem,
+          scheduleItem.id === item.id ? data : scheduleItem,
         ),
       )
     } catch (error) {
@@ -240,13 +246,10 @@ export default function Calendar() {
     }
   }
 
+  // Apaga compromisso do banco de dados
   async function deleteSchedule(itemId) {
     try {
-      const token = localStorage.getItem('token')
-
-      await axios.delete(`http://localhost:3000/api/schedules/${itemId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      await del(`/api/schedules/${itemId}`)
 
       setItems((currentItems) =>
         currentItems.filter((item) => item.id !== itemId),
@@ -260,51 +263,56 @@ export default function Calendar() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F4F4F4] font-sans p-6 pb-32">
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 max-w-5xl w-full mx-auto items-start">
-        <div className="col-span-1 md:col-span-7 flex flex-col gap-6">
-          <div className="flex items-center gap-3 w-full">
-            <div className="bg-white rounded-2xl px-6 py-4 flex-1 shadow-xs">
-              <h1 className="text-2xl font-extrabold text-black tracking-tight">
-                Programação para:
-              </h1>
+    <div className="calendar-container">
+      <div className="calendar-grid">
+        
+        {/* Coluna da esquerda (Cabeçalho e Calendário) */}
+        <div className="calendar-col-left">
+          
+          <div className="calendar-title-box">
+            <div className="calendar-title-card">
+              <h1>Programação para:</h1>
             </div>
 
+            {/* Botão de Fechar que redireciona ao feed (Mobile apenas) */}
             <button
               onClick={() => navigate('/feed')}
-              className="bg-white hover:bg-gray-100 text-gray-400 hover:text-gray-600 w-12 h-12 rounded-full flex items-center justify-center shadow-xs transition-colors cursor-pointer text-lg md:hidden"
+              className="calendar-close-btn"
               aria-label="Fechar"
             >
-              <span className="fi fi-br-cross text-[18px]" aria-hidden="true" />
+              <span className="fi fi-br-cross" aria-hidden="true" />
             </button>
           </div>
 
-          <div className="bg-white rounded-3xl p-6 shadow-xs w-full">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-extrabold text-black">
+          {/* Grade Mensal do Calendário */}
+          <div className="calendar-card">
+            <div className="calendar-month-selector">
+              <h2>
                 {monthNames[currentDate.getMonth()]} de {currentDate.getFullYear()}
               </h2>
 
-              <div className="flex gap-4 text-gray-600 font-bold">
-                <button onClick={previousMonth} className="hover:text-black cursor-pointer px-1">
+              <div className="calendar-month-nav">
+                <button onClick={previousMonth} className="calendar-month-nav-btn">
                   ‹
                 </button>
-                <button onClick={nextMonth} className="hover:text-black cursor-pointer px-1">
+                <button onClick={nextMonth} className="calendar-month-nav-btn">
                   ›
                 </button>
               </div>
             </div>
 
-            <div className="grid grid-cols-7 border-t border-l border-gray-100 text-center">
+            <div className="calendar-days-grid">
+              {/* Cabeçalho de dias da semana */}
               {weekDays.map((day, index) => (
                 <div
                   key={`${day}-${index}`}
-                  className="py-3 font-semibold text-gray-800 border-b border-r border-gray-100"
+                  className="calendar-weekday-cell"
                 >
                   {day}
                 </div>
               ))}
 
+              {/* Dias do Mês */}
               {days.map((day) => {
                 const hasItems = items.some((item) => item.date === day.dateKey)
                 const holiday = holidays.find((holidayItem) => holidayItem.date === day.dateKey)
@@ -315,27 +323,23 @@ export default function Calendar() {
                   <button
                     key={day.dateKey}
                     onClick={() => selectDay(day)}
-                    className={`h-[70px] w-full font-medium border-b border-r border-gray-100 transition-colors flex items-center justify-center ${
+                    className={`calendar-day-btn ${
                       !day.isCurrentMonth
-                        ? 'text-gray-300 bg-gray-50/50'
-                        : 'text-gray-800'
+                        ? 'calendar-day-btn-out-month'
+                        : 'calendar-day-btn-current-month'
                     } ${
                       hasItems
-                        ? 'bg-[#A2E9A6] font-bold'
+                        ? 'calendar-day-btn-has-events'
                         : holiday
-                            ? 'bg-[#FBC07F] font-bold'
+                            ? 'calendar-day-btn-is-holiday'
                             : ''
                     } ${
-                      isSelected ? 'ring-1 ring-black ring-inset' : ''
+                      isSelected ? 'calendar-day-btn-selected' : ''
                     }`}
                   >
-                     <span
-                        className={`w-7 h-7 flex items-center justify-center rounded-full ${
-                        isToday ? 'bg-gray-200' : ''
-                        }`}
-                    >{day.day}
+                    <span className={isToday ? 'calendar-day-today-indicator' : 'calendar-day-today-indicator-none'}>
+                      {day.day}
                     </span>
-                    
                   </button>
                 )
               })}
@@ -343,73 +347,75 @@ export default function Calendar() {
           </div>
         </div>
 
-        <div className="col-span-1 md:col-span-5 flex flex-col gap-4 md:mt-[72px]">
-            <div className="bg-[#FBC07F] rounded-2xl p-5 shadow-xs flex flex-col gap-1 text-gray-900">
-                {selectedHoliday ? (
-                    <>
-                    <span className="font-extrabold text-sm leading-tight block">
-                        {formatDatePt(selectedHoliday.date)}
-                    </span>
-                    <span className="font-extrabold text-sm leading-tight block">
-                        {selectedHoliday.name}
-                    </span>
-                    <p className="text-xs font-medium mt-1">Feriado nacional</p>
-                    </>
-                ) : (
-                    <>
-                    <span className="font-extrabold text-sm leading-tight block">
-                        Nenhum feriado nacional
-                    </span>
-                    <p className="text-xs font-medium mt-1">
-                        Selecione uma data marcada em laranja.
-                    </p>
-                    </>
-                )}
-            </div>
+        {/* Coluna da direita (Exibição de feriados e CRUD de compromissos) */}
+        <div className="calendar-col-right">
+          
+          {/* Card informativo de Feriado Nacional */}
+          <div className="calendar-holiday-card">
+            {selectedHoliday ? (
+              <>
+                <span className="calendar-holiday-date">
+                  {formatDatePt(selectedHoliday.date)}
+                </span>
+                <span className="calendar-holiday-name">
+                  {selectedHoliday.name}
+                </span>
+                <p className="calendar-holiday-desc">Feriado nacional</p>
+              </>
+            ) : (
+              <>
+                <span className="calendar-holiday-date">
+                  Nenhum feriado nacional
+                </span>
+                <p className="calendar-holiday-desc">
+                  Selecione uma data marcada em laranja.
+                </p>
+              </>
+            )}
+          </div>
 
-          <div className="bg-white rounded-2xl p-5 shadow-xs flex flex-col justify-between gap-4 min-h-[160px]">
+          {/* Agenda e Gerenciamento de tarefas do dia selecionado */}
+          <div className="calendar-schedule-card">
             <div>
-              <h3 className="font-extrabold text-sm text-black mb-2">
+              <h3 className="calendar-schedule-title">
                 Agenda do dia {formatDatePt(selectedDate)}:
               </h3>
 
               {loading ? (
-                <p className="text-xs font-bold text-gray-500">Carregando...</p>
+                <p style={{ fontSize: '12px', fontWeight: '700', color: '#6b7280' }}>Carregando...</p>
               ) : selectedItems.length === 0 ? (
-                <p className="text-xs font-bold text-gray-400 leading-relaxed">
+                <p style={{ fontSize: '12px', fontWeight: '700', color: '#9ca3af' }}>
                   Nenhuma programação para este dia.
                 </p>
               ) : (
-                <div className="space-y-3">
+                <div className="calendar-schedule-list">
                   {selectedItems.map((item) => (
                     <div
                       key={item.id}
-                      className={`rounded-xl p-3 ${
-                        item.done ? 'bg-green-50' : 'bg-gray-50'
-                      }`}
+                      className={`calendar-schedule-item ${item.done ? 'calendar-schedule-item-done' : ''}`}
                     >
-                      <p className={`text-xs font-bold leading-relaxed ${item.done ? 'text-gray-400 line-through' : 'text-gray-800'}`}>
+                      <p className={`calendar-schedule-item-text ${item.done ? 'calendar-schedule-item-text-done' : ''}`}>
                         {item.description}
                       </p>
 
-                      <div className="flex flex-wrap justify-end gap-1.5 text-[10px] font-bold mt-3">
+                      <div className="calendar-schedule-item-actions">
                         <button
                           onClick={() => startEditing(item)}
-                          className="bg-gray-100 hover:bg-gray-200 text-gray-400 px-2.5 py-1.5 rounded-md transition-colors cursor-pointer"
+                          className="calendar-action-btn-gray"
                         >
                           Editar
                         </button>
 
                         <button
                           onClick={() => toggleDone(item)}
-                          className="bg-[#A2E9A6] hover:bg-[#8ee093] text-white px-2.5 py-1.5 rounded-md transition-colors cursor-pointer"
+                          className="calendar-action-btn-green"
                         >
                           {item.done ? 'Desfazer' : 'Feito'}
                         </button>
 
                         <button
                           onClick={() => deleteSchedule(item.id)}
-                          className="bg-red-100 hover:bg-red-200 text-red-400 px-2.5 py-1.5 rounded-md transition-colors cursor-pointer"
+                          className="calendar-action-btn-red"
                         >
                           Apagar
                         </button>
@@ -420,17 +426,18 @@ export default function Calendar() {
               )}
             </div>
 
-            <div className="flex flex-col gap-2">
+            {/* Input e botão para Adicionar/Editar tarefa */}
+            <div className="calendar-add-form">
               <textarea
                 value={description}
                 onChange={(event) => setDescription(event.target.value)}
                 placeholder="Digite uma programação..."
-                className="w-full min-h-[80px] bg-gray-50 rounded-xl p-3 text-xs font-medium text-gray-800 outline-none resize-none placeholder:text-gray-400"
+                className="calendar-schedule-textarea"
               />
 
               <button
                 onClick={saveSchedule}
-                className="bg-black hover:bg-gray-900 text-white font-bold text-xs py-3 rounded-xl transition-colors"
+                className="calendar-add-btn"
               >
                 {editingItem ? 'Salvar edição' : 'Adicionar programação'}
               </button>
@@ -439,23 +446,16 @@ export default function Calendar() {
         </div>
       </div>
 
-      <nav className="fixed bottom-0 left-0 right-0 bg-white px-8 py-4 flex justify-between items-center z-50 rounded-t-[32px] border-t border-gray-100 md:hidden">
-        <div
-          onClick={() => navigate('/search')}
-          className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200 transition-colors"
-        >
-          <span className="fi fi-br-search text-[22px] opacity-60" aria-hidden="true" />
+      {/* Menu de navegação inferior Mobile */}
+      <nav className="calendar-mobile-nav">
+        <div onClick={() => navigate('/search')} className="calendar-nav-item">
+          <span className="fi fi-br-search" aria-hidden="true" />
         </div>
-
-        <div
-          onClick={() => navigate('/feed')}
-          className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-200 transition-colors"
-        >
-          <span className="fi fi-br-home text-[22px] opacity-60" aria-hidden="true" />
+        <div onClick={() => navigate('/feed')} className="calendar-nav-item">
+          <span className="fi fi-br-home" aria-hidden="true" />
         </div>
-
-        <div className="w-16 h-16 bg-black flex items-center justify-center text-white shadow-lg rounded-full cursor-pointer">
-          <span className="fi fi-br-calendar text-[22px] opacity-80" aria-hidden="true" />
+        <div className="calendar-nav-item-active">
+          <span className="fi fi-br-calendar" aria-hidden="true" />
         </div>
       </nav>
     </div>

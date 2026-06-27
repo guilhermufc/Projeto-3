@@ -1,14 +1,20 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import Post from './Post'
+import '../styles/Layout.css' // Importa estilos customizados do layout geral (CSS vanilla)
 
 export default function Layout({ children }) {
   const location = useLocation()
   const navigate = useNavigate()
+  
+  // Estado para guardar os dados do usuário conectado
   const [user, setUser] = useState(null)
+  // Estado para controlar a exibição do modal de novo post
   const [isModalOpen, setIsModalOpen] = useState(false)
+  // Estado responsivo para saber se o dispositivo possui tela menor que 768px (Mobile)
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
 
+  // Monitora alterações de tamanho da janela do navegador para atualizar o estado responsivo
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768)
@@ -17,8 +23,10 @@ export default function Layout({ children }) {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
+  // Verifica se o usuário está nas telas de login/registro para ocultar o layout/sidebar
   const isAuthRoute = ['/login', '/register', '/'].includes(location.pathname) || (location.pathname === '/post' && isMobile)
 
+  // Lê os dados salvos do usuário localmente toda vez que navega
   useEffect(() => {
     const storedUser = localStorage.getItem('user')
     if (storedUser) {
@@ -26,22 +34,26 @@ export default function Layout({ children }) {
     }
   }, [location.pathname])
 
+  // No desktop, a rota /post é renderizada diretamente como um modal sobreposto ao invés de ir para outra página
   useEffect(() => {
     if (location.pathname === '/post' && !isMobile) {
       setIsModalOpen(true)
     }
   }, [location.pathname, isMobile])
 
+  // Se o usuário estiver numa rota de login/registro, renderiza apenas o componente filho diretamente
   if (isAuthRoute) {
     return children
   }
 
+  // Função para deslogar da aplicação, limpando dados da sessão e redirecionando
   const handleLogout = () => {
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     navigate('/login')
   }
 
+  // Converte a URL da imagem de perfil do usuário para o servidor local
   const resolveImageUrl = (imagePath) => {
     if (!imagePath) return ''
     if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) return imagePath
@@ -51,116 +63,101 @@ export default function Layout({ children }) {
   const currentPath = location.pathname
 
   return (
-    <div className="w-full min-h-screen bg-[#F4F4F4]">
-      <div className="min-h-screen md:grid md:grid-cols-[100px_1fr_100px] md:max-w-full md:px-2">
-        {/* Coluna 1: Sidebar (esquerda) - apenas no desktop */}
-        <aside className="hidden md:flex flex-col items-center py-6 border-r border-gray-200/50 h-screen sticky top-0 justify-center">
-          <div className="bg-white border border-gray-100 rounded-[48px] py-8 px-3 flex flex-col gap-5 items-center shadow-xs w-20">
+    <div className="layout-container">
+      <div className="layout-grid">
+        
+        {/* Coluna 1: Sidebar (esquerda) - Visível apenas em computadores/telas maiores */}
+        <aside className="layout-sidebar-left">
+          <div className="layout-sidebar-menu">
             
-            {/* 1. Notificações */}
+            {/* 1. Botão de Notificações */}
             <button
               onClick={() => alert('Sem novas notificações.')}
-              className="w-10 h-10 bg-gray-100 text-gray-500 hover:bg-gray-200 flex items-center justify-center rounded-full transition-all duration-200 cursor-pointer"
+              className="layout-menu-btn"
               title="Notificações"
             >
               <span className="fi fi-br-bell-ring text-[18px]" />
             </button>
 
-            {/* 2. Pesquisa */}
+            {/* 2. Botão de Pesquisa (marca ativo se a rota for /search) */}
             <button
               onClick={() => navigate('/search')}
-              className={`flex items-center justify-center rounded-full transition-all duration-200 cursor-pointer ${
-                currentPath === '/search'
-                  ? 'w-12 h-12 bg-black text-white shadow-lg scale-110'
-                  : 'w-10 h-10 bg-gray-100 text-gray-500 hover:bg-gray-200'
-              }`}
+              className={currentPath === '/search' ? 'layout-menu-btn-active' : 'layout-menu-btn'}
               title="Buscar"
             >
-              <span className={`fi fi-br-search ${currentPath === '/search' ? 'text-[20px]' : 'text-[18px]'}`} />
+              <span className="fi fi-br-search" />
             </button>
 
-            {/* 3. Home */}
+            {/* 3. Botão Home/Feed (marca ativo se a rota for /feed) */}
             <button
               onClick={() => navigate('/feed')}
-              className={`flex items-center justify-center rounded-full transition-all duration-200 cursor-pointer ${
-                currentPath === '/feed'
-                  ? 'w-12 h-12 bg-black text-white shadow-lg scale-110'
-                  : 'w-10 h-10 bg-gray-100 text-gray-500 hover:bg-gray-200'
-              }`}
+              className={currentPath === '/feed' ? 'layout-menu-btn-active' : 'layout-menu-btn'}
               title="Página Inicial"
             >
-              <span className={`fi fi-br-home ${currentPath === '/feed' ? 'text-[20px]' : 'text-[18px]'}`} />
+              <span className="fi fi-br-home" />
             </button>
 
-            {/* Escrever na Sidebar */}
+            {/* Botão de Atalho para abrir o modal de nova publicação */}
             <button
               onClick={() => setIsModalOpen(true)}
-              className="w-10 h-10 bg-gray-100 text-gray-500 hover:bg-gray-200 flex items-center justify-center rounded-full transition-all duration-200 cursor-pointer"
+              className="layout-menu-btn"
               title="Escrever Publicação"
             >
-              <span className="fi fi-br-plus text-[18px]" />
+              <span className="fi fi-br-plus" />
             </button>
 
-            {/* 4. Calendário */}
+            {/* 4. Botão de Calendário */}
             <button
               onClick={() => navigate('/calendar')}
-              className={`flex items-center justify-center rounded-full transition-all duration-200 cursor-pointer ${
-                currentPath === '/calendar'
-                  ? 'w-12 h-12 bg-black text-white shadow-lg scale-110'
-                  : 'w-10 h-10 bg-gray-100 text-gray-500 hover:bg-gray-200'
-              }`}
+              className={currentPath === '/calendar' ? 'layout-menu-btn-active' : 'layout-menu-btn'}
               title="Calendário"
             >
-              <span className={`fi fi-br-calendar ${currentPath === '/calendar' ? 'text-[20px]' : 'text-[18px]'}`} />
+              <span className="fi fi-br-calendar" />
             </button>
 
-            {/* 5. Perfil */}
+            {/* 5. Botão de Perfil */}
             <button
               onClick={() => navigate('/profile')}
-              className={`flex items-center justify-center rounded-full transition-all duration-200 overflow-hidden cursor-pointer ${
-                currentPath === '/profile' || currentPath === '/salvos'
-                  ? 'w-12 h-12 border-4 border-black shadow-lg scale-110 bg-white'
-                  : 'w-10 h-10 bg-gray-100 hover:bg-gray-200'
-              }`}
+              className={currentPath === '/profile' || currentPath === '/salvos' ? 'layout-avatar-btn-active' : 'layout-avatar-btn'}
               title="Meu Perfil"
             >
               {user?.avatar ? (
                 <img
                   src={resolveImageUrl(user.avatar)}
                   alt={user.username}
-                  className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="fi fi-br-circle-user text-[18px] text-gray-500" />
+                <span className="fi fi-br-circle-user text-[18px]" />
               )}
             </button>
 
-            {/* Divider */}
-            <div className="w-8 h-[1px] bg-gray-100 my-1" />
+            {/* Divisor visual */}
+            <div className="layout-menu-divider" />
 
-            {/* 6. Sair */}
+            {/* 6. Botão Sair */}
             <button
               onClick={handleLogout}
-              className="w-10 h-10 bg-red-50 text-red-500 hover:bg-red-100 flex items-center justify-center rounded-full transition-all duration-200 cursor-pointer"
+              className="layout-logout-btn"
               title="Sair"
             >
-              <span className="material-symbols-outlined text-[20px]">logout</span>
+              <span className="material-symbols-outlined">logout</span>
             </button>
 
           </div>
         </aside>
 
-        {/* Coluna 2: Conteúdo Central */}
-        <main className={`w-full min-h-screen bg-transparent mx-auto ${currentPath === '/calendar' ? 'max-w-5xl md:px-4' : 'max-w-2xl'}`}>
+        {/* Coluna 2: Conteúdo Central da Aplicação */}
+        <main className={`layout-main-content ${currentPath === '/calendar' ? 'layout-width-calendar' : 'layout-width-default'}`}>
           {children}
         </main>
 
-        {/* Coluna 3: Botão de Escrever (direita) - apenas no desktop */}
-        <aside className="hidden md:flex flex-col justify-end items-center pb-12 border-l border-gray-200/50 h-screen sticky top-0">
+        {/* Coluna 3: Barra lateral direita (somente no desktop) */}
+        <aside className="layout-sidebar-right">
+          {/* Se estiver no feed, exibe botão grande flutuante para novas publicações */}
           {currentPath === '/feed' && (
             <button
               onClick={() => setIsModalOpen(true)}
-              className="bg-[#ff9947] hover:bg-[#e68536] hover:scale-110 active:scale-95 text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 cursor-pointer"
+              className="layout-post-fab"
               title="Criar Publicação"
             >
               <span className="fi fi-br-plus text-[28px]" />
@@ -169,12 +166,14 @@ export default function Layout({ children }) {
         </aside>
       </div>
 
+      {/* Renderiza o modal de criação de post sobreposto na tela caso o estado esteja ativo */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
+        <div className="layout-modal-overlay">
           <Post
             isModal={true}
             onClose={() => {
               setIsModalOpen(false)
+              // Se o usuário acessou a rota de post diretamente, volta para o feed ao fechar
               if (location.pathname === '/post') {
                 navigate('/feed')
               }

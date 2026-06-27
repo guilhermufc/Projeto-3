@@ -1,14 +1,19 @@
+/* Estilos auxiliares gerais (ex: cards de herói ou layouts alternativos) */
+
+/* Shell principal do aplicativo (usado para centralizar elementos grandes se necessário) */
 .app-shell {
   min-height: 100vh;
   display: grid;
   place-items: center;
   padding: 24px;
+  /* Fundo degradê escuro sofisticado com brilho radial na parte superior */
   background:
     radial-gradient(circle at top, rgba(255, 255, 255, 0.18), transparent 35%),
     linear-gradient(180deg, #0f172a 0%, #111827 100%);
   color: #f8fafc;
 }
 
+/* Card principal destacado (estilo glassmorphism transparente) */
 .hero-card {
   width: min(100%, 420px);
   border-radius: 24px;
@@ -16,9 +21,10 @@
   background: rgba(15, 23, 42, 0.78);
   border: 1px solid rgba(148, 163, 184, 0.18);
   box-shadow: 0 24px 60px rgba(15, 23, 42, 0.4);
-  backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px); /* Efeito embaçado no fundo */
 }
 
+/* Texto menor em caixa alta acima do título principal (eyebrow text) */
 .eyebrow {
   margin: 0 0 10px;
   color: #93c5fd;
@@ -27,24 +33,28 @@
   text-transform: uppercase;
 }
 
+/* Título de destaque dentro do card */
 .hero-card h1 {
   margin: 0;
-  font-size: clamp(2rem, 6vw, 3.2rem);
+  font-size: clamp(2rem, 6vw, 3.2rem); /* Tamanho responsivo automático de fonte */
   line-height: 1;
 }
 
+/* Parágrafo de descrição */
 .description {
   margin: 16px 0 0;
   color: #cbd5e1;
   line-height: 1.6;
 }
 
+/* Grid de linhas com informações de status */
 .status-row {
   display: grid;
   gap: 12px;
   margin-top: 24px;
 }
 
+/* Itens individuais de status */
 .status-row span {
   display: block;
   padding: 14px 16px;
@@ -54,6 +64,7 @@
   border: 1px solid rgba(148, 163, 184, 0.12);
 }
 
+/* Regras responsivas para telas maiores que 768px (Desktops) */
 @media (min-width: 768px) {
   .app-shell {
     padding: 40px;
@@ -64,6 +75,6 @@
   }
 
   .status-row {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* Divide em duas colunas de mesmo tamanho */
   }
 }

@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import { post } from '../services/api'
+import '../styles/Register.css' // Importa estilos customizados da tela (CSS vanilla)
 
 export default function Register() {
+  // Estados para gerenciar os inputs do usuário no cadastro
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -12,73 +14,84 @@ export default function Register() {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
+  // Handler executado quando o usuário envia o formulário de cadastro
   const handleRegister = async (e) => {
-    e.preventDefault()
-    setError('')
-    setSuccess('')
+    e.preventDefault() // Evita reload de página
+    setError('') // Limpa erros antigos
+    setSuccess('') // Limpa mensagens de sucesso antigas
 
+    // Validações básicas de preenchimento de campos obrigatórios
     if (!username.trim() || !email.trim() || !password.trim()) {
       setError('Preencha todos os campos')
       return
     }
 
+    // Regra de validação: tamanho da senha
     if (password.length < 6) {
       setError('A senha deve ter no mínimo 6 caracteres')
       return
     }
 
-    setLoading(true)
+    setLoading(true) // Ativa loading no botão de cadastro
 
     try {
-      await axios.post('http://localhost:3000/api/auth/register', {
+      // Envia os dados cadastrais para o servidor
+      await post('/api/auth/register', {
         username,
         email,
         password,
       })
 
+      // Informa o sucesso e agenda o redirecionamento para o login
       setSuccess('Conta criada com sucesso! Redirecionando para login...')
       setTimeout(() => {
         navigate('/login')
       }, 1200)
     } catch (err) {
+      // Captura mensagem de erro do servidor
       setError(err.response?.data?.message || 'Erro ao criar conta')
     } finally {
-      setLoading(false)
+      setLoading(false) // Desativa loading
     }
   }
 
   return (
-    <div className="bg-background flex flex-col font-body-md text-on-surface min-h-screen">
-      <header className="bg-transparent flex items-center justify-center w-full px-margin-mobile md:px-margin-desktop flex-col pt-6 pb-1">
-        <div className="flex items-center gap-sm justify-center mb-4">
-          <span className="material-symbols-outlined text-[#333333] text-headline-md" aria-hidden="true">school</span>
-          <h1 className="font-headline-md text-headline-md font-bold text-[#333333]">EduConnect</h1>
+    <div className="register-container">
+      {/* Cabeçalho com logo e título */}
+      <header className="register-header">
+        <div className="register-logo-box">
+          <span className="material-symbols-outlined register-logo-icon" aria-hidden="true">school</span>
+          <h1 className="register-brand-title">EduConnect</h1>
         </div>
       </header>
 
-      <main className="flex-grow flex flex-col items-center justify-center px-margin-mobile py-10">
-        <div className="w-full max-w-[360px] flex flex-col items-center">
-          <h1 className="font-headline-md text-[28px] text-[#1A1A1A] font-bold mb-8 text-center mt-4">
+      {/* Seção central com o formulário */}
+      <main className="register-main">
+        <div className="register-box">
+          <h1 className="register-subtitle">
             Crie sua conta
           </h1>
 
+          {/* Renderização condicional de erros */}
           {error && (
-            <div className="w-full bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
+            <div className="register-error">
               {error}
             </div>
           )}
 
+          {/* Renderização condicional de feedback de sucesso */}
           {success && (
-            <div className="w-full bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4">
+            <div className="register-success">
               {success}
             </div>
           )}
 
-          <form className="w-full space-y-4" onSubmit={handleRegister}>
-            <div className="relative">
-              <span className="fi fi-br-circle-user absolute left-4 top-1/2 -translate-y-1/2 text-outline text-[20px]" aria-hidden="true" />
+          <form className="register-form" onSubmit={handleRegister}>
+            {/* Campo: Nome/Como quer ser chamado */}
+            <div className="register-input-group">
+              <span className="fi fi-br-circle-user register-input-icon" aria-hidden="true" />
               <input
-                className="w-full minimal-input rounded-xl py-4 pl-12 pr-4 outline-none transition-all font-body-md text-body-md placeholder:text-outline/60"
+                className="register-input minimal-input"
                 id="full_name"
                 placeholder="Como quer ser chamado"
                 type="text"
@@ -87,10 +100,11 @@ export default function Register() {
               />
             </div>
 
-            <div className="relative">
-              <span className="fi fi-br-envelope absolute left-4 top-1/2 -translate-y-1/2 text-outline text-[20px]" aria-hidden="true" />
+            {/* Campo: Email */}
+            <div className="register-input-group">
+              <span className="fi fi-br-envelope register-input-icon" aria-hidden="true" />
               <input
-                className="w-full minimal-input rounded-xl py-4 pl-12 pr-4 outline-none transition-all font-body-md text-body-md placeholder:text-outline/60"
+                className="register-input minimal-input"
                 id="email"
                 placeholder="seu@email.edu.br"
                 type="email"
@@ -99,10 +113,11 @@ export default function Register() {
               />
             </div>
 
-            <div className="relative">
-              <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-[20px]" aria-hidden="true">lock</span>
+            {/* Campo: Senha com botão de alternar visibilidade */}
+            <div className="register-input-group">
+              <span className="material-symbols-outlined register-input-icon" aria-hidden="true">lock</span>
               <input
-                className="w-full minimal-input rounded-xl py-4 pl-12 pr-12 outline-none transition-all font-body-md text-body-md placeholder:text-outline/60"
+                className="register-input minimal-input"
                 id="password"
                 placeholder="Mínimo 6 caracteres"
                 type={showPassword ? 'text' : 'password'}
@@ -110,16 +125,17 @@ export default function Register() {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <button
-                className="absolute inset-y-0 right-0 pr-3 flex items-center hover:opacity-70 transition-opacity"
+                className="register-eye-btn"
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
               >
-                <span className="fi fi-br-eye text-outline text-[16px]" aria-hidden="true" />
+                <span className="fi fi-br-eye register-input-icon-eye" aria-hidden="true" />
               </button>
             </div>
 
+            {/* Botão de cadastro */}
             <button
-              className="w-full bg-[#8E8E8E] text-white font-bold py-3.5 rounded-full hover:bg-[#7A7A7A] active:scale-[0.98] transition-all mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="register-button-primary"
               type="submit"
               disabled={loading}
             >
@@ -127,23 +143,25 @@ export default function Register() {
             </button>
           </form>
 
-          <div className="w-full mt-8 space-y-3 text-center">
+          {/* Link para retornar ao Login */}
+          <div className="register-link-container">
             <button
               type="button"
               onClick={() => navigate('/login')}
-              className="font-body-md text-[#574fbe] hover:text-[#4339a9] transition-colors"
+              className="register-link"
             >
-              Já tem uma conta? <span className="font-bold">Entrar</span>
+              Já tem uma conta? <span className="bold">Entrar</span>
             </button>
           </div>
         </div>
       </main>
 
-      <footer className="w-full py-8 px-margin-mobile md:px-margin-desktop border-t border-[#E0E0E0] mt-auto">
-        <div className="max-w-[1200px] mx-auto flex flex-col justify-between items-center gap-4 text-[#8E8E8E]">
-          <div className="flex items-center justify-center gap-xs w-full">
-            <span className="font-label-md text-label-md font-bold text-[#333333]">EduConnect</span>
-            <span className="font-body-sm text-body-sm">© 2026</span>
+      {/* Rodapé da página */}
+      <footer className="register-footer">
+        <div className="register-footer-content">
+          <div className="register-footer-row">
+            <span className="register-footer-brand">EduConnect</span>
+            <span className="register-footer-copyright">© 2026</span>
           </div>
         </div>
       </footer>

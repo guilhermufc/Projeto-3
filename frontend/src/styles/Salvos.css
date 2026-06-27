@@ -1,0 +1,277 @@
+/* Estilos para a tela de publicações salvas (Salvos) */
+
+/* Container geral da tela de posts salvos */
+.salvos-container {
+  font-family: 'Inter', sans-serif;
+  color: #1a1c1d;
+  padding-bottom: 128px; /* pb-32 */
+  min-height: 100vh;
+  background-color: #F4F4F4;
+}
+
+@media (min-width: 768px) {
+  .salvos-container {
+    background-color: transparent; /* md:bg-transparent */
+  }
+}
+
+/* Cabeçalho fixo */
+.salvos-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: rgba(244, 244, 244, 0.8); /* bg-[#F4F4F4]/80 */
+  backdrop-filter: blur(8px);
+  padding: 20px 24px; /* px-6 py-5 */
+  display: flex;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .salvos-header {
+    background-color: transparent;
+    backdrop-filter: none;
+  }
+}
+
+/* Botão de retorno ao perfil */
+.salvos-back-btn {
+  position: absolute;
+  left: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px; /* w-10 */
+  height: 40px; /* h-10 */
+  background-color: #ffffff;
+  border-radius: 9999px;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* shadow-sm */
+  transition: background-color 0.2s ease;
+}
+
+.salvos-back-btn:hover {
+  background-color: #f9fafb;
+}
+
+.salvos-back-btn span {
+  font-size: 24px;
+  color: #1f2937;
+}
+
+/* Título central */
+.salvos-title-wrapper {
+  width: 100%;
+  text-align: center;
+}
+
+.salvos-title-wrapper h1 {
+  font-size: 20px; /* text-xl */
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+/* Área principal da listagem */
+.salvos-main {
+  padding: 16px; /* px-6 */
+  margin-top: 16px; /* pt-4 */
+  max-width: 448px; /* max-w-md */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Lista de posts salvos */
+.salvos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* space-y-4 */
+  padding-bottom: 48px;
+}
+
+/* Layout de estado vazio (quando não há posts salvos) */
+.salvos-empty-state {
+  text-align: center;
+  padding: 48px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.salvos-empty-icon {
+  font-size: 60px; /* text-6xl */
+  color: #d1d5db; /* text-gray-300 */
+}
+
+.salvos-empty-text {
+  color: #6b7280;
+  font-weight: 500;
+  margin: 0;
+}
+
+.salvos-explore-btn {
+  margin-top: 8px;
+  background-color: #ff9947;
+  color: #ffffff;
+  font-weight: 600;
+  padding: 10px 24px; /* py-2.5 px-6 */
+  border-radius: 9999px;
+  border: none;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.salvos-explore-btn:hover {
+  background-color: #e68536;
+}
+
+.salvos-explore-btn:active {
+  transform: scale(0.95);
+}
+
+/* Card do post salvo */
+.salvos-post-card {
+  background-color: #ffffff;
+  border-radius: 32px; /* rounded-[32px] */
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  position: relative;
+}
+
+/* Crachás das categorias */
+.salvos-post-badges {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: flex-end;
+  max-width: 45%;
+}
+
+.salvos-badge {
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Cabeçalho do post salvo */
+.salvos-post-header {
+  display: flex;
+  align-items: start;
+  margin-bottom: 20px;
+}
+
+.salvos-post-author-box {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+}
+
+.salvos-post-avatar {
+  width: 56px;
+  height: 56px;
+  background-color: #dbeafe; /* bg-blue-100 */
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.salvos-post-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.salvos-post-avatar span {
+  font-size: 28px;
+  color: #9ca3af;
+  opacity: 0.4;
+}
+
+.salvos-post-author-info {
+  padding-right: 8px;
+}
+
+.salvos-post-author-name {
+  font-size: 18px; /* text-lg */
+  font-weight: 500;
+  color: #6b7280;
+  margin: 0;
+  transition: color 0.2s ease;
+}
+
+.salvos-post-author-name:hover {
+  color: #111827;
+}
+
+.salvos-post-title {
+  font-size: 24px; /* text-2xl */
+  font-weight: 800;
+  line-height: 1.25;
+  color: #1a1c1d; /* text-on-surface */
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
+/* Corpo do post */
+.salvos-post-body {
+  margin-bottom: 32px; /* mb-8 */
+}
+
+.salvos-post-content {
+  font-size: 17px;
+  line-height: 1.6;
+  color: #1a1c1d;
+  margin: 0;
+}
+
+.salvos-post-image-wrapper {
+  border-radius: 28px;
+  overflow: hidden;
+  background-color: #f3f4f6;
+  margin-top: 16px;
+}
+
+.salvos-post-image-wrapper img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Ações */
+.salvos-post-actions {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+
+.salvos-save-btn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.salvos-save-btn img {
+  width: 20px;
+  height: 20px;
+}
+
+.salvos-save-count {
+  font-size: 14px;
+  color: #4b5563;
+}

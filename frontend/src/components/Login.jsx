@@ -1,65 +1,73 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import { post } from '../services/api'
+import '../styles/Login.css' // Importa estilos customizados da tela (CSS vanilla)
 
 export default function Login() {
+  // Estados para gerenciar as credenciais digitadas e controle de loading/erros
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
+  // Função assíncrona responsável por enviar os dados de autenticação para a API
   const handleLogin = async (e) => {
-    e.preventDefault()
-    setError('')
-    setLoading(true)
+    e.preventDefault() // Evita o comportamento padrão de recarregar a página ao submeter o formulário
+    setError('') // Reseta o estado de erro
+    setLoading(true) // Ativa o estado de carregamento do botão
 
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/login', {
+      // Faz o POST assíncrono para o endpoint de login através do fetch centralizado do api.js
+      const data = await post('/api/auth/login', {
         username,
         password
       })
 
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token)
-        localStorage.setItem('user', JSON.stringify(response.data.user))
+      // Se o login for bem-sucedido, armazena o usuário localmente e redireciona para o Feed
+      if (data.user) {
+        localStorage.setItem('user', JSON.stringify(data.user))
         navigate('/feed')
       }
     } catch (err) {
+      // Captura a mensagem de erro retornada pelo servidor ou define uma padrão
       setError(err.response?.data?.message || 'Erro ao fazer login')
     } finally {
-      setLoading(false)
+      setLoading(false) // Desativa o estado de carregamento do botão
     }
   }
 
   return (
-    <div className="bg-background flex flex-col font-body-md text-on-surface min-h-screen">
-      {/* TopAppBar */}
-      <header className="bg-transparent flex items-center justify-center w-full px-margin-mobile md:px-margin-desktop flex-col pt-6 pb-1">
-        <div className="flex items-center gap-sm justify-center mb-4">
-          <span className="material-symbols-outlined text-[#333333] text-headline-md" aria-hidden="true">school</span>
-          <h1 className="font-headline-md text-headline-md font-bold text-[#333333]">EduConnect</h1>
+    <div className="login-container">
+      {/* TopAppBar - Cabeçalho superior com título do app */}
+      <header className="login-header">
+        <div className="login-logo-box">
+          <span className="material-symbols-outlined login-logo-icon" aria-hidden="true">school</span>
+          <h1 className="login-brand-title">EduConnect</h1>
         </div>
       </header>
 
-      <main className="flex-grow flex flex-col items-center justify-center px-margin-mobile py-10">
-        <div className="w-full max-w-[360px] flex flex-col items-center">
-          <h2 className="font-headline-md text-[28px] text-[#1A1A1A] font-bold mb-8 text-center mt-4">
+      {/* Main - Conteúdo central com formulário de login */}
+      <main className="login-main">
+        <div className="login-box">
+          <h2 className="login-subtitle">
             Entrar no Aplicativo
           </h2>
 
+          {/* Exibe mensagem de erro caso o login falhe */}
           {error && (
-            <div className="w-full bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
+            <div className="login-error">
               {error}
             </div>
           )}
 
-          <form className="w-full space-y-4" onSubmit={handleLogin}>
-            {/* Username */}
-            <div className="relative">
-              <span className="fi fi-br-circle-user absolute left-4 top-1/2 -translate-y-1/2 text-outline text-[20px]" aria-hidden="true" />
+          {/* Formulário de Login */}
+          <form className="login-form" onSubmit={handleLogin}>
+            {/* Campo de Usuário */}
+            <div className="login-input-group">
+              <span className="fi fi-br-circle-user login-input-icon" aria-hidden="true" />
               <input
-                className="w-full minimal-input rounded-xl py-4 pl-12 pr-4 outline-none transition-all font-body-md text-body-md placeholder:text-outline/60"
+                className="login-input minimal-input"
                 id="username"
                 placeholder="Nome de Usuário"
                 type="text"
@@ -68,11 +76,11 @@ export default function Login() {
               />
             </div>
 
-            {/* Password */}
-            <div className="relative">
-              <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-[20px]" aria-hidden="true">lock</span>
+            {/* Campo de Senha */}
+            <div className="login-input-group">
+              <span className="material-symbols-outlined login-input-icon" aria-hidden="true">lock</span>
               <input
-                className="w-full minimal-input rounded-xl py-4 pl-12 pr-12 outline-none transition-all font-body-md text-body-md placeholder:text-outline/60"
+                className="login-input minimal-input"
                 id="password"
                 placeholder="Senha"
                 type="password"
@@ -81,33 +89,33 @@ export default function Login() {
               />
             </div>
 
-            {/* Login Button */}
+            {/* Botão de Submissão do Login */}
             <button
-              className="w-full bg-[#8E8E8E] text-white font-bold py-3.5 rounded-full hover:bg-[#7A7A7A] active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="login-button-primary"
               type="submit"
               disabled={loading}
             >
               {loading ? 'Entrando...' : 'Entrar'}
             </button>
 
-            {/* Forgot Password */}
-            <div className="text-center pt-2">
+            {/* Link para recuperação/esquecimento de senha */}
+            <div className="login-link-container">
               <button
                 type="button"
                 onClick={() => navigate('/register')}
-                className="font-body-md text-[#8E8E8E] hover:text-[#333333] transition-colors"
+                className="login-link"
               >
                 Esqueceu a senha?
               </button>
             </div>
           </form>
 
-          <div className="w-full mt-6 space-y-2">
-            {/* Create Account */}
+          {/* Botão secundário de criação de conta */}
+          <div className="login-extra-actions">
             <button
               type="button"
               onClick={() => navigate('/register')}
-              className="w-full bg-[#D1C9FF] text-[#574fbe] font-bold py-3.5 rounded-full hover:bg-[#C4BAFF] active:scale-[0.98] transition-all"
+              className="login-button-secondary"
             >
               Criar nova conta
             </button>
@@ -115,12 +123,12 @@ export default function Login() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="w-full py-8 px-margin-mobile md:px-margin-desktop border-t border-[#E0E0E0] mt-auto">
-        <div className="max-w-[1200px] mx-auto flex flex-col justify-between items-center gap-4 text-[#8E8E8E]">
-          <div className="flex items-center justify-center gap-xs w-full">
-            <span className="font-label-md text-label-md font-bold text-[#333333]">EduConnect</span>
-            <span className="font-body-sm text-body-sm">© 2026</span>
+      {/* Footer - Rodapé institucional com direitos autorais */}
+      <footer className="login-footer">
+        <div className="login-footer-content">
+          <div className="login-footer-row">
+            <span className="login-footer-brand">EduConnect</span>
+            <span className="login-footer-copyright">© 2026</span>
           </div>
         </div>
       </footer>

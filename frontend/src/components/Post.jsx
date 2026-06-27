@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import { post as apiPost } from '../services/api'
+import '../styles/Post.css' // Importa estilos customizados da tela (CSS vanilla)
 
+// Opções de categorias de postagem disponíveis
 const categoryOptions = ['Métodos', 'Leitura', 'Registro', 'Tutorial', 'Dica', 'Pergunta', 'Resposta', 'Artigo', 'Vídeo', 'Experiência', 'Projeto', 'Recurso', 'Dúvida', 'Discussão', 'Evento', 'Anúncio', 'Caso de Uso', 'Pesquisa', 'Ferramenta', 'Desafio']
+
+// Mapeamento de estilos dinâmicos de categorias
 const categoryStyles = {
   Métodos: 'bg-[#FFAB6D] text-white',
   Leitura: 'bg-[#FF85D1] text-white',
@@ -35,9 +39,13 @@ export default function Post({ isModal = false, onClose = null }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const navigate = useNavigate()
+  
+  // Referência ao input de arquivo oculto para anexar imagem
   const attachmentInputRef = useRef(null)
+  // Referência para redimensionamento automático do textarea de texto
   const textareaRef = useRef(null)
 
+  // Alterna a seleção de uma categoria (liga/desliga tag)
   const toggleCategory = (category) => {
     setSelectedCategories((currentCategories) =>
       currentCategories.includes(category)
@@ -46,15 +54,18 @@ export default function Post({ isModal = false, onClose = null }) {
     )
   }
 
+  // Simula o clique no input de arquivo quando clica no ícone de imagem
   const openAttachmentPicker = () => {
     attachmentInputRef.current?.click()
   }
 
+  // Monitora a escolha do arquivo de imagem
   const handleAttachmentChange = (event) => {
     const nextImage = event.target.files?.[0] || null
     setSelectedImage(nextImage)
   }
 
+  // Desfaz a seleção da imagem limpa a visualização
   const cancelImageSelection = () => {
     setSelectedImage(null)
 
@@ -63,6 +74,7 @@ export default function Post({ isModal = false, onClose = null }) {
     }
   }
 
+  // Gera e revoga URLs locais de visualização para evitar vazamentos de memória
   useEffect(() => {
     if (!selectedImage) {
       setImagePreviewUrl('')
@@ -75,14 +87,15 @@ export default function Post({ isModal = false, onClose = null }) {
     return () => URL.revokeObjectURL(previewUrl)
   }, [selectedImage])
 
+  // Ajusta automaticamente a altura do textarea de forma elegante com base no texto digitado
   useEffect(() => {
-    // Auto-grow textarea based on content
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto'
       textareaRef.current.style.height = `${Math.max(textareaRef.current.scrollHeight, 120)}px`
     }
   }, [content])
 
+  // Submete a publicação usando Multipart FormData
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
@@ -100,7 +113,6 @@ export default function Post({ isModal = false, onClose = null }) {
     setLoading(true)
 
     try {
-      const token = localStorage.getItem('token')
       const formData = new FormData()
       formData.append('title', title)
       formData.append('content', content)
@@ -110,15 +122,11 @@ export default function Post({ isModal = false, onClose = null }) {
         formData.append('image', selectedImage)
       }
 
-      await axios.post('http://localhost:3000/api/posts', formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      await apiPost('/api/posts', formData)
 
       if (isModal) {
         onClose?.()
-        window.location.reload()
+        window.location.reload() // Recarrega a página ao salvar pelo modal
       } else {
         navigate('/feed')
       }
@@ -129,6 +137,7 @@ export default function Post({ isModal = false, onClose = null }) {
     }
   }
 
+  // Executa fechamento do formulário
   const handleClose = () => {
     if (isModal) {
       onClose?.()
@@ -137,32 +146,34 @@ export default function Post({ isModal = false, onClose = null }) {
     }
   }
 
+  // JSX de Renderização caso seja instanciado em modo Modal
   if (isModal) {
     return (
-      <div className="w-full bg-white rounded-3xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto no-scrollbar border border-gray-100 flex flex-col gap-4 max-w-2xl">
-        <header className="w-full flex justify-between items-center h-12 bg-transparent">
-          <span className="text-xl font-bold text-gray-800">Nova Publicação</span>
+      <div className="post-modal-container no-scrollbar">
+        <header className="post-form-header">
+          <span className="title">Nova Publicação</span>
           <button
             type="button"
             onClick={handleClose}
-            className="p-2 cursor-pointer hover:bg-gray-100 transition-colors rounded-full active:scale-95 duration-200"
+            className="post-close-btn"
           >
-            <span className="text-gray-500 text-[28px] leading-none" aria-hidden="true">×</span>
+            <span aria-hidden="true">×</span>
           </button>
         </header>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+          <div className="post-error-alert">
             {error}
           </div>
         )}
 
-        <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
-          <div className="bg-surface-container-lowest rounded-2xl p-md main-card-shadow flex flex-col gap-4">
-            <label className="flex flex-col gap-2">
-              <span className="font-headline-md text-headline-md text-on-surface">Título</span>
+        <form className="post-form-body" onSubmit={handleSubmit}>
+          {/* Input de Título */}
+          <div className="post-input-box">
+            <label className="post-input-label">
+              <span>Título</span>
               <input
-                className="w-full border-none focus:ring-0 bg-transparent font-body-lg text-body-lg text-on-surface placeholder-outline-variant px-0"
+                className="post-title-input"
                 placeholder="Dê um título para a publicação"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -170,56 +181,57 @@ export default function Post({ isModal = false, onClose = null }) {
             </label>
           </div>
 
-          <div className="flex flex-col gap-3">
-            <div className="bg-surface-container-lowest rounded-2xl p-md main-card-shadow focus-within:ring-2 focus-within:ring-primary-container transition-all">
-              <div className="relative w-full">
-                <textarea
-                  ref={textareaRef}
-                  className="w-full border-none focus:ring-0 bg-transparent font-body-lg text-body-lg text-on-surface placeholder-outline-variant resize-none overflow-hidden"
-                  placeholder="Escreva aqui..."
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  rows="4"
-                />
-              </div>
+          {/* Campo de Escrita principal */}
+          <div className="post-form-body">
+            <div className="post-content-box">
+              <textarea
+                ref={textareaRef}
+                className="post-content-textarea"
+                placeholder="Escreva aqui..."
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                rows="4"
+              />
 
-              <div className="flex flex-col gap-4 mt-4">
+              <div className="post-content-footer">
                 {imagePreviewUrl && (
-                  <div className="overflow-hidden rounded-[16px] bg-surface-container-highest w-32 h-32 relative">
+                  <div className="post-img-preview">
                     <img
                       src={imagePreviewUrl}
-                      alt="Pré-visualização da imagem"
-                      className="h-full w-full object-cover"
+                      alt="Pré-visualização"
                     />
                     <button
                       type="button"
                       onClick={cancelImageSelection}
-                      className="absolute top-1 right-1 bg-black/60 hover:bg-black/80 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+                      className="post-img-cancel-btn"
                     >
                       ×
                     </button>
                   </div>
                 )}
-                <div className="flex justify-end">
+                
+                {/* Seletor de Imagem */}
+                <div className="post-image-picker-row">
                   <button
                     type="button"
                     onClick={openAttachmentPicker}
-                    className="text-on-surface-variant hover:text-primary transition-colors active:scale-90"
+                    className="post-image-picker-btn"
                     aria-label="Adicionar imagem"
                   >
-                    <span className="material-symbols-outlined text-[32px]" aria-hidden="true">image</span>
+                    <span className="material-symbols-outlined" aria-hidden="true">image</span>
                   </button>
                 </div>
               </div>
             </div>
 
-            <div className="bg-surface-container-lowest rounded-2xl p-md main-card-shadow flex flex-col gap-4">
-              <div className="flex items-center gap-2">
-                <img src="/icons/categorias.png" alt="Categorias" className="w-8 h-8" />
-                <h1 className="font-headline-md text-headline-md text-on-surface">Categorias</h1>
+            {/* Seleção de Categorias */}
+            <div className="post-categories-box">
+              <div className="post-categories-title-row">
+                <img src="/icons/categorias.png" alt="Categorias" />
+                <h1>Categorias</h1>
               </div>
 
-              <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar flex-nowrap">
+              <div className="post-categories-list no-scrollbar">
                 {categoryOptions.map((category) => {
                   const selected = selectedCategories.includes(category)
 
@@ -228,7 +240,7 @@ export default function Post({ isModal = false, onClose = null }) {
                       key={category}
                       type="button"
                       onClick={() => toggleCategory(category)}
-                      className={`px-6 py-2 ${selected ? categoryStyles[category] : 'bg-surface-container-high text-on-surface-variant'} font-label-md text-label-md rounded-full active:scale-95 transition-transform chip-shadow whitespace-nowrap`}
+                      className={`post-category-chip ${selected ? categoryStyles[category] : ''}`}
                       aria-pressed={selected}
                     >
                       {category}
@@ -239,19 +251,20 @@ export default function Post({ isModal = false, onClose = null }) {
             </div>
           </div>
 
+          {/* Input de arquivo oculto */}
           <input
             ref={attachmentInputRef}
             type="file"
             accept="image/*"
             onChange={handleAttachmentChange}
-            className="hidden"
+            style={{ display: 'none' }}
           />
 
-          <div className="flex justify-start pb-2">
+          <div className="post-submit-row">
             <button
               type="submit"
               disabled={loading}
-              className="bg-[#8E9196] text-white font-headline-md text-headline-md px-12 py-3 rounded-full hover:bg-on-surface-variant active:scale-95 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="post-submit-btn"
             >
               {loading ? 'Postando...' : 'Postar'}
             </button>
@@ -261,31 +274,32 @@ export default function Post({ isModal = false, onClose = null }) {
     )
   }
 
+  // JSX de Renderização caso seja instanciado em modo Página Inteira (Full page)
   return (
-    <div className="font-body-md text-body-md min-h-screen flex flex-col items-center bg-background">
-      <header className="w-full max-w-xl flex justify-between items-center px-margin-mobile h-16 bg-transparent">
+    <div className="post-page-container">
+      <header className="post-form-header" style={{ maxWidth: '42rem', padding: '0 16px' }}>
         <button
           onClick={handleClose}
-          className="p-2 cursor-pointer hover:bg-surface-container-low transition-colors rounded-full active:scale-95 duration-200"
+          className="post-close-btn"
+          title="Fechar"
         >
-          <span className="text-on-surface-variant text-[32px] leading-none" aria-hidden="true">×</span>
+          <span style={{ fontSize: '32px' }} aria-hidden="true">×</span>
         </button>
-        <div className="hidden" />
       </header>
 
-      <main className="w-full max-w-xl px-margin-mobile flex flex-col gap-6">
+      <main className="post-form-body" style={{ width: '100%', maxWidth: '42rem', padding: '0 16px' }}>
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+          <div className="post-error-alert">
             {error}
           </div>
         )}
 
-        <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
-          <div className="bg-surface-container-lowest rounded-2xl p-md main-card-shadow flex flex-col gap-4">
-            <label className="flex flex-col gap-2">
-              <span className="font-headline-md text-headline-md text-on-surface">Título</span>
+        <form className="post-form-body" onSubmit={handleSubmit}>
+          <div className="post-input-box">
+            <label className="post-input-label">
+              <span>Título</span>
               <input
-                className="w-full border-none focus:ring-0 bg-transparent font-body-lg text-body-lg text-on-surface placeholder-outline-variant px-0"
+                className="post-title-input"
                 placeholder="Dê um título para a publicação"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -293,49 +307,53 @@ export default function Post({ isModal = false, onClose = null }) {
             </label>
           </div>
 
-          <div className="flex flex-col gap-3">
-            <div className="bg-surface-container-lowest rounded-2xl p-md main-card-shadow focus-within:ring-2 focus-within:ring-primary-container transition-all">
-              <div className="relative w-full">
-                <textarea
-                  ref={textareaRef}
-                  className="w-full border-none focus:ring-0 bg-transparent font-body-lg text-body-lg text-on-surface placeholder-outline-variant resize-none overflow-hidden"
-                  placeholder="Escreva aqui..."
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  rows="4"
-                />
-              </div>
+          <div className="post-form-body">
+            <div className="post-content-box">
+              <textarea
+                ref={textareaRef}
+                className="post-content-textarea"
+                placeholder="Escreva aqui..."
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                rows="4"
+              />
 
-              <div className="flex flex-col gap-4 mt-4">
+              <div className="post-content-footer">
                 {imagePreviewUrl && (
-                  <div className="overflow-hidden rounded-[16px] bg-surface-container-highest w-32 h-32">
+                  <div className="post-img-preview">
                     <img
                       src={imagePreviewUrl}
-                      alt="Pré-visualização da imagem"
-                      className="h-full w-full object-cover"
+                      alt="Pré-visualização"
                     />
+                    <button
+                      type="button"
+                      onClick={cancelImageSelection}
+                      className="post-img-cancel-btn"
+                    >
+                      ×
+                    </button>
                   </div>
                 )}
-                <div className="flex justify-end">
+                <div className="post-image-picker-row">
                   <button
                     type="button"
                     onClick={openAttachmentPicker}
-                    className="text-on-surface-variant hover:text-primary transition-colors active:scale-90"
+                    className="post-image-picker-btn"
                     aria-label="Adicionar imagem"
                   >
-                    <span className="material-symbols-outlined text-[32px]" aria-hidden="true">image</span>
+                    <span className="material-symbols-outlined" aria-hidden="true">image</span>
                   </button>
                 </div>
               </div>
             </div>
 
-            <div className="bg-surface-container-lowest rounded-2xl p-md main-card-shadow flex flex-col gap-4">
-              <div className="flex items-center gap-2">
-                <img src="/icons/categorias.png" alt="Categorias" className="w-8 h-8" />
-                <h1 className="font-headline-md text-headline-md text-on-surface">Categorias</h1>
+            <div className="post-categories-box">
+              <div className="post-categories-title-row">
+                <img src="/icons/categorias.png" alt="Categorias" />
+                <h1>Categorias</h1>
               </div>
 
-              <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar flex-nowrap">
+              <div className="post-categories-list no-scrollbar">
                 {categoryOptions.map((category) => {
                   const selected = selectedCategories.includes(category)
 
@@ -344,7 +362,7 @@ export default function Post({ isModal = false, onClose = null }) {
                       key={category}
                       type="button"
                       onClick={() => toggleCategory(category)}
-                      className={`px-6 py-2 ${selected ? categoryStyles[category] : 'bg-surface-container-high text-on-surface-variant'} font-label-md text-label-md rounded-full active:scale-95 transition-transform chip-shadow whitespace-nowrap`}
+                      className={`post-category-chip ${selected ? categoryStyles[category] : ''}`}
                       aria-pressed={selected}
                     >
                       {category}
@@ -360,14 +378,14 @@ export default function Post({ isModal = false, onClose = null }) {
             type="file"
             accept="image/*"
             onChange={handleAttachmentChange}
-            className="hidden"
+            style={{ display: 'none' }}
           />
 
-          <div className="flex justify-start pb-xl">
+          <div className="post-submit-row">
             <button
               type="submit"
               disabled={loading}
-              className="bg-[#8E9196] text-white font-headline-md text-headline-md px-12 py-3 rounded-full hover:bg-on-surface-variant active:scale-95 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="post-submit-btn"
             >
               {loading ? 'Postando...' : 'Postar'}
             </button>
@@ -375,9 +393,10 @@ export default function Post({ isModal = false, onClose = null }) {
         </form>
       </main>
 
-      <div className="fixed top-0 left-0 w-full h-full -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary-fixed opacity-20 blur-[100px] rounded-full"></div>
-        <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-tertiary-fixed opacity-20 blur-[100px] rounded-full"></div>
+      {/* Blobs coloridos de decoração de fundo */}
+      <div className="post-bg-decorations">
+        <div className="blob-1"></div>
+        <div className="blob-2"></div>
       </div>
     </div>
   )

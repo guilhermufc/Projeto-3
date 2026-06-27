@@ -1,34 +1,38 @@
+/* Importação de fontes do Google Fonts (Plus Jakarta Sans e Inter) */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+/* Importação do conjunto de ícones Flaticon Bold Rounded */
 @import url('https://cdn-uicons.flaticon.com/uicons-bold-rounded/css/uicons-bold-rounded.css');
+/* Importação dos ícones Material Symbols Outlined da Google */
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
+/* Regras gerais para todos os elementos */
 * {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box; /* Garante que padding e bordas estejam inclusos no tamanho total do elemento */
+  -webkit-tap-highlight-color: transparent; /* Remove a cor de destaque ao clicar em dispositivos móveis */
 }
 
+/* Configurações básicas do elemento html */
 html {
-  -webkit-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%; /* Evita que o tamanho do texto mude automaticamente em alguns navegadores móveis */
 }
 
+/* Configuração do corpo (body) da página */
 body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100dvh;
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background-color: #f9f9fb;
-  color: #1a1c1d;
+  margin: 0; /* Remove as margens padrão do navegador */
+  min-width: 320px; /* Define uma largura mínima para evitar quebras em telas muito pequenas */
+  min-height: 100dvh; /* Define a altura mínima baseada na altura dinâmica da viewport */
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; /* Define a fonte padrão */
+  background-color: #f9f9fb; /* Cor de fundo cinza bem claro */
+  color: #1a1c1d; /* Cor de texto cinza escuro para melhor legibilidade */
 }
 
+/* Configurações para links */
 a {
-  color: inherit;
-  text-decoration: none;
+  color: inherit; /* Herda a cor do elemento pai */
+  text-decoration: none; /* Remove o sublinhado padrão dos links */
 }
 
+/* Ajustes de formulários para herdar a fonte global */
 button,
 input,
 textarea,
@@ -36,7 +40,7 @@ select {
   font: inherit;
 }
 
-/* Normalize Flaticon glyph metrics so icons stay centered in circular containers. */
+/* Normalização para que os ícones do Flaticon fiquem centralizados */
 .fi {
   display: inline-flex;
   align-items: center;
@@ -53,33 +57,39 @@ select {
   line-height: 1;
 }
 
+/* Centralização e ajuste vertical para Material Icons */
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
   line-height: 1;
   vertical-align: middle;
 }
 
+/* Utilitário para ocultar a barra de rolagem de forma elegante */
 .no-scrollbar::-webkit-scrollbar {
-  display: none;
+  display: none; /* Oculta no Chrome, Safari e Opera */
 }
 
 .no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  -ms-overflow-style: none;  /* Oculta no Internet Explorer e Edge */
+  scrollbar-width: none;  /* Oculta no Firefox */
 }
 
+/* Definição de sombras padrão usadas em cards */
 .card-shadow {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
+/* Sombra leve para chips e botões menores */
 .chip-shadow {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+/* Sombra principal com um tom azulado leve para os cards principais */
 .main-card-shadow {
   box-shadow: 0 16px 32px rgba(91, 89, 141, 0.04);
 }
 
+/* Inputs de texto minimalistas (borda fina com foco discreto) */
 .minimal-input {
   border: 1px solid #C0C0C0;
   background: transparent;

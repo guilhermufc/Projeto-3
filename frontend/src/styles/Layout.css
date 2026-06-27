@@ -1,0 +1,257 @@
+/* Estilos do layout principal (sidebar + área de conteúdo central) */
+
+/* Container externo que envolve todo o layout da aplicação */
+.layout-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #F4F4F4; /* Cor cinza de fundo da aplicação */
+}
+
+/* Container do grid responsivo */
+.layout-grid {
+  min-height: 100vh;
+}
+
+@media (min-width: 768px) {
+  .layout-grid {
+    display: grid;
+    /* Divide a tela em 3 colunas: Sidebar (100px), Conteúdo (1fr), Botão Flutuante Desktop (100px) */
+    grid-template-columns: 100px 1fr 100px;
+    max-width: 100%;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+
+/* Barra lateral esquerda de navegação (somente para computadores/tablets) */
+.layout-sidebar-left {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .layout-sidebar-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    border-right: 1px solid rgba(229, 231, 235, 0.5); /* border-gray-200/50 */
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    justify-content: center;
+  }
+}
+
+/* Caixa branca arredondada que agrupa os botões da barra lateral */
+.layout-sidebar-menu {
+  background-color: #ffffff;
+  border: 1px solid #eeeef0; /* border-gray-100 */
+  border-radius: 48px; /* rounded-[48px] */
+  padding: 32px 12px; /* py-8 px-3 */
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* gap-5 */
+  align-items: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); /* shadow-xs */
+  width: 80px; /* w-20 */
+}
+
+/* Estilo padrão de botões inativos/normais da barra lateral */
+.layout-menu-btn {
+  width: 40px; /* w-10 */
+  height: 40px; /* h-10 */
+  background-color: #f3f3f5; /* bg-gray-100 */
+  color: #51434b; /* text-gray-500 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px; /* rounded-full */
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.layout-menu-btn:hover {
+  background-color: #e8e8ea; /* hover:bg-gray-200 */
+}
+
+/* Estilo do botão ativo da tela atual */
+.layout-menu-btn-active {
+  width: 48px; /* w-12 */
+  height: 48px; /* h-12 */
+  background-color: #000000; /* bg-black */
+  color: #ffffff; /* text-white */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+  transform: scale(1.1); /* scale-110 */
+  transition: all 0.2s ease;
+}
+
+/* Botão de avatar de perfil no menu lateral */
+.layout-avatar-btn {
+  width: 40px;
+  height: 40px;
+  background-color: #f3f3f5;
+  border: none;
+  border-radius: 9999px;
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.layout-avatar-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.layout-avatar-btn:hover {
+  background-color: #e8e8ea;
+}
+
+/* Estilo de avatar ativo */
+.layout-avatar-btn-active {
+  width: 48px;
+  height: 48px;
+  background-color: #ffffff;
+  border: 4px solid #000000;
+  border-radius: 9999px;
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transform: scale(1.1);
+  transition: all 0.2s ease;
+}
+
+.layout-avatar-btn-active img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Divisor estético entre os botões */
+.layout-menu-divider {
+  width: 32px; /* w-8 */
+  height: 1px;
+  background-color: #f3f3f5; /* bg-gray-100 */
+  margin: 4px 0; /* my-1 */
+}
+
+/* Botão de sair (Logout) na cor vermelha */
+.layout-logout-btn {
+  width: 40px;
+  height: 40px;
+  background-color: #fef2f2; /* bg-red-50 */
+  color: #ef4444; /* text-red-500 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.layout-logout-btn:hover {
+  background-color: #fee2e2; /* hover:bg-red-100 */
+}
+
+/* Área central onde os componentes filhos (children) são renderizados */
+.layout-main-content {
+  width: 100%;
+  min-height: 100vh;
+  background-color: transparent;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Tamanho específico de largura máxima para a maioria das telas */
+.layout-width-default {
+  max-width: 42rem; /* max-w-2xl */
+}
+
+/* Tamanho expandido específico para o calendário */
+.layout-width-calendar {
+  max-width: 80rem; /* max-w-5xl */
+}
+
+@media (min-width: 768px) {
+  .layout-width-calendar {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+/* Barra lateral direita (somente no desktop) para o botão de adicionar post */
+.layout-sidebar-right {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .layout-sidebar-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 48px; /* pb-12 */
+    border-left: 1px solid rgba(229, 231, 235, 0.5); /* border-l border-gray-200/50 */
+    height: 100vh;
+    position: sticky;
+    top: 0;
+  }
+}
+
+/* Botão de postagem flutuante no desktop */
+.layout-post-fab {
+  background-color: #ff9947;
+  color: #ffffff;
+  width: 64px; /* w-16 */
+  height: 64px; /* h-16 */
+  border-radius: 9999px;
+  border: none;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.layout-post-fab:hover {
+  background-color: #e68536;
+  transform: scale(1.1);
+}
+
+.layout-post-fab:active {
+  transform: scale(0.95);
+}
+
+/* Modal de criação de postagem em tela cheia (sobreposição) */
+.layout-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.4); /* bg-black/40 */
+  backdrop-filter: blur(4px); /* backdrop-blur-xs */
+  padding: 16px; /* p-4 */
+}

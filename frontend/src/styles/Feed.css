@@ -1,0 +1,346 @@
+/* Estilos para a tela do Feed principal */
+
+/* Container da página */
+.feed-container {
+  font-family: 'Inter', sans-serif;
+  color: #1a1c1d;
+  padding-bottom: 128px; /* pb-32 */
+  min-height: 100vh;
+}
+
+/* Cabeçalho superior (somente mobile) */
+.feed-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: rgba(255, 255, 255, 0.8); /* bg-white/80 */
+  backdrop-filter: blur(8px);
+  padding: 16px 24px; /* py-4 px-6 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .feed-header {
+    display: none; /* md:hidden */
+  }
+}
+
+/* Ícone de notificações */
+.feed-header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.feed-notification-wrapper {
+  position: relative;
+}
+
+.feed-notification-badge {
+  width: 56px; /* w-14 */
+  height: 56px; /* h-14 */
+  background-color: #f3f3f5; /* bg-gray-100 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+}
+
+.feed-notification-badge span {
+  font-size: 22px;
+  opacity: 0.8;
+}
+
+/* Avatar do usuário no cabeçalho superior */
+.feed-avatar-wrapper {
+  width: 56px; /* w-14 */
+  height: 56px; /* h-14 */
+  background-color: #f3f3f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  overflow: hidden;
+}
+
+.feed-avatar-wrapper:hover {
+  background-color: #e8e8ea;
+}
+
+.feed-avatar-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.feed-avatar-wrapper span {
+  font-size: 22px;
+  opacity: 0.8;
+}
+
+/* Main feed layout */
+.feed-main {
+  padding: 0 24px; /* px-6 */
+  margin-top: 16px; /* pt-4 */
+}
+
+/* Lista de posts */
+.feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* space-y-4 */
+  padding-bottom: 48px;
+}
+
+/* Card individual do post */
+.feed-post-card {
+  background-color: #ffffff;
+  border-radius: 32px; /* rounded-[32px] */
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); /* card-shadow */
+  position: relative;
+}
+
+/* Crachás de categorias no topo do post */
+.feed-post-badges {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: flex-end;
+  max-width: 45%;
+}
+
+.feed-badge {
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Cabeçalho do post (Avatar + Nome) */
+.feed-post-header {
+  display: flex;
+  align-items: start;
+  margin-bottom: 20px;
+}
+
+.feed-post-author-box {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+}
+
+.feed-post-avatar {
+  width: 56px; /* w-14 */
+  height: 56px; /* h-14 */
+  background-color: #dbeafe; /* bg-blue-100 */
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.feed-post-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.feed-post-avatar span {
+  font-size: 28px;
+  color: #3b82f6;
+  opacity: 0.4;
+}
+
+.feed-post-author-info {
+  padding-right: 8px;
+}
+
+.feed-post-author-name {
+  font-size: 18px; /* text-lg */
+  font-weight: 500;
+  color: #6b7280;
+  margin: 0;
+  transition: color 0.2s ease;
+}
+
+.feed-post-author-name:hover {
+  color: #111827;
+}
+
+.feed-post-title {
+  font-size: 24px; /* text-2xl */
+  font-weight: 800;
+  line-height: 1.25;
+  color: #1a1c1d; /* text-on-surface */
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
+/* Corpo do post (Texto e Imagem) */
+.feed-post-body {
+  margin-bottom: 32px; /* mb-8 */
+}
+
+.feed-post-content {
+  font-size: 17px;
+  line-height: 1.6;
+  color: #1a1c1d;
+  margin: 0;
+}
+
+.feed-post-image-wrapper {
+  border-radius: 28px;
+  overflow: hidden;
+  background-color: #f3f4f6;
+  margin-top: 16px;
+}
+
+.feed-post-image-wrapper img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Ações (Favoritar/Salvar) */
+.feed-post-actions {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+
+.feed-save-btn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.feed-save-btn img {
+  width: 20px;
+  height: 20px;
+}
+
+.feed-save-btn span.fi {
+  font-size: 20px;
+  color: #9ca3af;
+  opacity: 0.6;
+}
+
+.feed-save-count {
+  font-size: 14px;
+  color: #4b5563;
+}
+
+/* Navegação inferior (mobile) */
+.feed-mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 50;
+  border-top-left-radius: 32px;
+  border-top-right-radius: 32px;
+  border-top: 1px solid #f3f3f5;
+}
+
+@media (min-width: 768px) {
+  .feed-mobile-nav {
+    display: none;
+  }
+}
+
+.feed-nav-item {
+  width: 56px;
+  height: 56px;
+  background-color: #f3f3f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.feed-nav-item:hover {
+  background-color: #e8e8ea;
+}
+
+.feed-nav-item span {
+  font-size: 22px;
+  opacity: 0.6;
+}
+
+.feed-nav-item-active {
+  width: 64px;
+  height: 64px;
+  background-color: #000000;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  cursor: pointer;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.feed-nav-item-active span {
+  font-size: 22px;
+  opacity: 0.8;
+}
+
+/* Botão de nova publicação flutuante (somente mobile) */
+.feed-fab-mobile {
+  position: fixed;
+  bottom: 128px; /* bottom-32 */
+  right: 32px; /* right-8 */
+  background-color: #ff9947;
+  color: #ffffff;
+  width: 80px; /* w-20 */
+  height: 80px; /* h-20 */
+  border-radius: 9999px;
+  border: none;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* shadow-2xl */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 40;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+@media (min-width: 768px) {
+  .feed-fab-mobile {
+    display: none; /* md:hidden */
+  }
+}
+
+.feed-fab-mobile:hover {
+  transform: scale(1.1);
+}
+
+.feed-fab-mobile:active {
+  transform: scale(0.95);
+}
+
+.feed-fab-mobile span {
+  font-size: 34px;
+}

@@ -1,0 +1,258 @@
+/* Estilos específicos para a tela de Registro (criação de conta) */
+
+/* Container geral da página de cadastro */
+.register-container {
+  background-color: #F2F2F2;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Inter', sans-serif;
+  color: #1a1c1d;
+  min-height: 100vh;
+}
+
+/* Cabeçalho superior */
+.register-header {
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 24px 16px 4px 16px;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .register-header {
+    padding-left: 64px;
+    padding-right: 64px;
+  }
+}
+
+/* Logo e marca */
+.register-logo-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.register-logo-icon {
+  color: #333333;
+  font-size: 24px;
+}
+
+.register-brand-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #333333;
+  margin: 0;
+}
+
+/* Conteúdo centralizado */
+.register-main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+}
+
+.register-box {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Título principal de cadastro */
+.register-subtitle {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 28px;
+  color: #1A1A1A;
+  font-weight: 700;
+  margin-bottom: 32px;
+  margin-top: 16px;
+  text-align: center;
+}
+
+/* Alertas de erro */
+.register-error {
+  width: 100%;
+  background-color: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+/* Alertas de sucesso */
+.register-success {
+  width: 100%;
+  background-color: #dcfce7; /* bg-green-100 */
+  border: 1px solid #86efac; /* border-green-400 */
+  color: #15803d; /* text-green-700 */
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+/* Estrutura do formulário */
+.register-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Grupos de inputs */
+.register-input-group {
+  position: relative;
+  width: 100%;
+}
+
+.register-input-group .register-input-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #84727c;
+  font-size: 20px;
+}
+
+.register-input {
+  width: 100%;
+  border-radius: 12px;
+  padding: 16px 16px 16px 48px;
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s ease;
+}
+
+.register-input::placeholder {
+  color: rgba(132, 114, 124, 0.6);
+}
+
+/* Botão de ver/ocultar senha */
+.register-eye-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  padding-right: 12px;
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.register-eye-btn:hover {
+  opacity: 0.7;
+}
+
+/* Botão principal de registro */
+.register-button-primary {
+  width: 100%;
+  background-color: #8E8E8E;
+  color: #ffffff;
+  font-weight: 700;
+  padding: 14px 16px;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.register-button-primary:hover:not(:disabled) {
+  background-color: #7A7A7A;
+}
+
+.register-button-primary:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.register-button-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Link para redirecionar ao Login */
+.register-link-container {
+  width: 100%;
+  margin-top: 32px; /* mt-8 */
+  text-align: center;
+}
+
+.register-link {
+  background: none;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  color: #574fbe;
+  cursor: pointer;
+  transition: colors 0.2s ease;
+  font-size: 16px;
+}
+
+.register-link:hover {
+  color: #4339a9;
+}
+
+.register-link .bold {
+  font-weight: 700;
+}
+
+/* Rodapé institucional */
+.register-footer {
+  width: 100%;
+  padding: 32px 16px;
+  border-top: 1px solid #E0E0E0;
+  margin-top: auto;
+}
+
+@media (min-width: 768px) {
+  .register-footer {
+    padding-left: 64px;
+    padding-right: 64px;
+  }
+}
+
+.register-footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  color: #8E8E8E;
+}
+
+.register-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.register-footer-brand {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.register-footer-copyright {
+  font-size: 14px;
+}

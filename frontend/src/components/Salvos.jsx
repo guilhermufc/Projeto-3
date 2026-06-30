@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { get, post } from '../services/api'
 import '../styles/Salvos.css' // Importa estilos customizados da tela (CSS vanilla)
 
-// Mapeamento de cores estáticas de categorias
+// 🔹 Mapeamento de cores estáticas de categorias
+// Cada chave é uma categoria e o valor define a cor do badge
 const categoryStyles = {
   Métodos:     'bg-[#FFAB6D] text-white',
   Leitura:     'bg-[#FF85D1] text-white',
@@ -28,11 +29,17 @@ const categoryStyles = {
 }
 
 export default function Salvos() {
+  // 🔹 Hooks e Estado
+  // posts guarda os posts salvos que vêm da API
+  // loading controla se a tela está carregando ou não
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
+
+  // Hook do React Router para mudar de página
   const navigate = useNavigate()
 
-  // Converte caminhos locais de imagens para o servidor de desenvolvimento
+  // 🔹 Função auxiliar para resolver URL de imagens
+  // Se for link externo, retorna direto; se for caminho local, adiciona localhost
   const resolveImageUrl = (imagePath) => {
     if (!imagePath) {
       return ''
@@ -45,7 +52,10 @@ export default function Salvos() {
     return `http://localhost:3000${imagePath}`
   }
 
-  // Verifica a autenticação e busca os posts marcados
+  // 🔹 useEffect
+  // Esse trecho roda quando o componente é montado.
+  // Ele verifica se existe usuário no localStorage.
+  // Se não tiver, redireciona para login. Se tiver, chama a função que busca os posts salvos.
   useEffect(() => {
     const storedUser = localStorage.getItem('user')
 
@@ -57,7 +67,11 @@ export default function Salvos() {
     fetchSavedPosts()
   }, [navigate])
 
-  // Busca posts favoritados/salvos
+  // 🔹 Função de buscar posts
+  // Faz uma requisição para a API /api/posts/saved.
+  // Se der certo, atualiza o estado posts.
+  // Se der erro 401, significa que o token expirou e o usuário é mandado para login.
+  // No final, marca loading como falso.
   const fetchSavedPosts = async () => {
     try {
       const data = await get('/api/posts/saved')
@@ -74,7 +88,9 @@ export default function Salvos() {
     }
   }
 
-  // Alterna a marcação de post. Remove o post da tela imediatamente já que estamos visualizando apenas os itens salvos.
+  // 🔹 Função de remover dos salvos
+  // Essa função chama a API para alternar o status de salvo.
+  // Como estamos na tela de salvos, se o usuário desmarcar, o post é removido imediatamente da lista local.
   const handleToggleSave = async (postId) => {
     try {
       await post(`/api/posts/${postId}/save`, {})
@@ -94,7 +110,8 @@ export default function Salvos() {
   return (
     <div className="salvos-container">
       
-      {/* Cabeçalho */}
+      {/* 🔹 Botão de voltar
+          Esse botão usa o navigate do React Router para voltar para a página de perfil */}
       <header className="salvos-header">
         <button
           onClick={() => navigate('/profile')}
@@ -109,7 +126,8 @@ export default function Salvos() {
         </div>
       </header>
 
-      {/* Grid de listagem central */}
+      {/* 🔹 Renderização condicional
+          Decide o que mostrar na tela: carregando, vazio ou lista de posts */}
       <main className="salvos-main">
         <div className="salvos-list">
           {loading ? (
@@ -135,7 +153,9 @@ export default function Salvos() {
             posts.map((post) => (
               <article key={post.id} className="salvos-post-card">
                 
-                {/* Categorias */}
+                {/* 🔹 Categorias com cores
+                    Esse trecho mostra as categorias do post como badges coloridas.
+                    As cores vêm do objeto categoryStyles definido no início do arquivo. */}
                 {post.categories && post.categories.length > 0 && (
                   <div className="salvos-post-badges">
                     {post.categories.map((cat) => (
@@ -149,7 +169,7 @@ export default function Salvos() {
                   </div>
                 )}
 
-                {/* Autor */}
+                {/* 🔹 Autor do post */}
                 <div className="salvos-post-header">
                   <div 
                     className="salvos-post-author-box"
@@ -172,7 +192,7 @@ export default function Salvos() {
                   </div>
                 </div>
 
-                {/* Conteúdo */}
+                {/* 🔹 Conteúdo e imagem */}
                 <div className="salvos-post-body">
                   <p className="salvos-post-content">
                     {post.content}
@@ -185,7 +205,7 @@ export default function Salvos() {
                   )}
                 </div>
 
-                {/* Ações: Desmarcar/Remover dos Salvos */}
+                {/* 🔹 Botão para remover dos salvos */}
                 <div className="salvos-post-actions">
                   <button
                     type="button"
